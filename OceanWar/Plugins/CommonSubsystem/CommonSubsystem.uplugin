@@ -1,0 +1,35 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "Common Subsystem",
+	"Description": "A Common Subsystem Plugin for creating and joining Sessions all over the Network. Should be compatible with almost any Subsystem",
+	"Category": "Online",
+	"CreatedBy": "MajorT",
+	"CreatedByURL": "https://discord.com/users/959875236403220490",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": true,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "CommonSubsystem",
+			"Type": "Runtime",
+			"LoadingPhase": "PreLoadingScreen"
+		}
+	],
+	"SupportURL": "https://discord.com/users/959875236403220490",
+	"Plugins": [
+		{
+			"Name": "OnlineSubsystem",
+			"Enabled": true
+		},
+		{
+			"Name": "OnlineSubsystemSteam",
+			"Enabled": true,
+			"Optional": true
+		}
+	]
+}
