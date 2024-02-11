@@ -3,7 +3,7 @@
 	"Version": 1,
 	"VersionName": "1.1",
 	"FriendlyName": "Common UI Extension",
-	"Description": "A Common UI Extension Plugin that adds additionnal functionality to the Common UI Plugin.",
+	"Description": "A Common UI Extension Plugin that adds additional functionality to the Common UI Plugin.",
 	"Category": "UI",
 	"CreatedBy": "MajorT",
 	"CreatedByURL": "https://discord.com/users/959875236403220490",
@@ -24,6 +24,10 @@
 	"Plugins": [
 		{
 			"Name": "CommonUI",
+			"Enabled": true
+		},
+		{
+			"Name" : "CommonAbilitySystem",
 			"Enabled": true
 		}
 	]

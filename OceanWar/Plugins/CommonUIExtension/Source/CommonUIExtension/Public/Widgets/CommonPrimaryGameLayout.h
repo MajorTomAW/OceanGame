@@ -28,7 +28,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category="Layer")
 	void RegisterLayer(UPARAM(meta = (Categories = "UI.Layer")) FGameplayTag LayerTag, UCommonActivatableWidgetContainerBase* LayerWidget);
-	void OnWidgetStackTransitioning(UCommonActivatableWidgetContainerBase* Widget, bool bIsTransitioning);
+
+	//void OnWidgetStackTransitioning(UCommonActivatableWidgetContainerBase* Widget, bool bIsTransitioning);
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void WidgetControllerSet(UObject* InWidgetController);

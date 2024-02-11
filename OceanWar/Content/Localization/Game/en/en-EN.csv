@@ -1,0 +1,21 @@
+Key,SourceString
+UI_Back,Back
+UI_Confirm,Confirm
+Attribute_Health,Health
+Attribute_MaxHealth,Max Health
+Attribute_Shield,Shield
+Attribute_MaxShield,Max Shield
+Attribute_Shield,Shield
+Attribute_Ammo,Ammo
+Attribute_MaxAmmo,Max Ammo
+Attribute_Damage,Damage
+Attribute_ReloadSpeed,Reload Speed
+Attribute_ShootCooldown,Shoot Cooldown
+Attribute_Acceleration,Acceleration
+Attribute_BackwardsMultiplier,Backwards Multiplier
+Attribute_MaxSpeed,Max Speed
+Attribute_TurnSpeed,Turn Speed
+Attribute_Weight,Weight
+Attribute_BoostSpeed,Boost Speed
+Attribute_BoostDuration,Boost Duration
+Attribute_BoostCooldown,Boost Cooldown

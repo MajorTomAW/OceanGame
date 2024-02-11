@@ -3,16 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/PlayerController.h"
 #include "OceanityPlayerController.generated.h"
 
-struct FGameplayTagContainer;
+
 class UAbilitySystemComponent;
-struct FGameplayTag;
 class UAttributeSet;
 class UInputAction;
 class UInputMappingContext;
 struct FInputActionValue;
+class UOceanityAbilityComponent;
 
 /**
  * 
@@ -51,6 +52,20 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input|EnhancedInput")
 	TObjectPtr<UInputAction> LookAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<class UAbilityInputConfig> InputConfig;
+
+	/** Ability Input Logic */
+	UPROPERTY()
+	TObjectPtr<UOceanityAbilityComponent> OceanityAbilityComponent;
+
+	UOceanityAbilityComponent* GetASC();
+	
+	void AbilityInputTagPressed(FGameplayTag AbilityTag);
+	void AbilityInputTagReleased(FGameplayTag AbilityTag);
+	void AbilityInputTagHeld(FGameplayTag AbilityTag);
+	/** end Ability Input Logic */
 	
 	/** Movement Logic */
 	void AccelerateShip(const FInputActionValue& Value);

@@ -19,23 +19,8 @@ void UCommonPrimaryGameLayout::RegisterLayer(FGameplayTag LayerTag, UCommonActiv
 {
 	if (!IsDesignTime())
 	{
-		LayerWidget->OnTransitioningChanged.AddUObject(this, &UCommonPrimaryGameLayout::OnWidgetStackTransitioning);
 		LayerWidget->SetTransitionDuration(0.f);
 		Layers.Add(LayerTag, LayerWidget);
-	}
-}
-
-void UCommonPrimaryGameLayout::OnWidgetStackTransitioning(UCommonActivatableWidgetContainerBase* Widget,
-	bool bIsTransitioning)
-{
-	//TODO
-	if (bIsTransitioning)
-	{
-		
-	}
-	else
-	{
-		
 	}
 }
 

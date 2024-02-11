@@ -4,7 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
+#include "CommonInputModeTypes.h"
 #include "CommonExtendedActivatableWidget.generated.h"
+
+UENUM(BlueprintType)
+enum class EInputMode : uint8
+{
+	Menu	UMETA(Tooltip = "Input is received by the UI only"),
+	Game	UMETA(Tooltip = "Input is received by the Game only"),
+	All		UMETA(Tooltip = "Input is received by UI and the Game"),
+};
 
 
 /**
@@ -25,4 +34,10 @@ public:
 protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void WidgetControllerSet(UObject* InWidgetController);
+	
+	virtual void NativeOnActivated() override;
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Input Mode")
+	EInputMode InputMode = EInputMode::All;
 };

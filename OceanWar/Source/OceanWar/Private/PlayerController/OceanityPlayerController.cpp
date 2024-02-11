@@ -2,12 +2,13 @@
 
 #include "PlayerController/OceanityPlayerController.h"
 
-#include "EnhancedInputComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
 #include "EnhancedInputSubsystems.h"
+#include "RenderGraphResources.h"
+#include "AbilitySystem/OceanityAbilityComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Kismet/KismetMathLibrary.h"
-#include "Kismet/KismetSystemLibrary.h"
+#include "Input/OceanityInputComponent.h"
 #include "Net/UnrealNetwork.h"
 
 AOceanityPlayerController::AOceanityPlayerController()
@@ -57,6 +58,34 @@ void AOceanityPlayerController::Tick(float DeltaSeconds)
 	{
 		GetPawn()->AddMovementInput(GetPawn()->GetActorForwardVector(), InputVelocity);
 	}
+}
+
+
+/** Ability Input Logic */
+UOceanityAbilityComponent* AOceanityPlayerController::GetASC()
+{
+	if (OceanityAbilityComponent == nullptr)
+	{
+		OceanityAbilityComponent = Cast<UOceanityAbilityComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn<APawn>()));
+	}
+	return OceanityAbilityComponent;
+}
+
+void AOceanityPlayerController::AbilityInputTagPressed(FGameplayTag AbilityTag)
+{
+	// GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Red, TEXT("AbilityInputTagPressed for Tag:" + AbilityTag.ToString()));
+}
+
+void AOceanityPlayerController::AbilityInputTagReleased(FGameplayTag AbilityTag)
+{
+	if (!GetASC()) return;
+	GetASC()->AbilityInputTagReleased(AbilityTag);
+}
+
+void AOceanityPlayerController::AbilityInputTagHeld(FGameplayTag AbilityTag)
+{
+	if (!GetASC()) return;
+	GetASC()->AbilityInputTagHeld(AbilityTag);
 }
 
 /** Movement Logic */
@@ -156,12 +185,19 @@ void AOceanityPlayerController::LookCamera(const FInputActionValue& Value)
 void AOceanityPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-	if (UEnhancedInputComponent* OceanityInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
+	if (UOceanityInputComponent* OceanityInputComponent = CastChecked<UOceanityInputComponent>(InputComponent))
 	{
-		OceanityInputComponent->BindAction(AccelerateAction, ETriggerEvent::Triggered, this, &AOceanityPlayerController::AccelerateShip);
-		OceanityInputComponent->BindAction(AccelerateAction, ETriggerEvent::Completed, this, &AOceanityPlayerController::StopAcceleratingShip);
-		OceanityInputComponent->BindAction(TurnAction, ETriggerEvent::Triggered, this, &AOceanityPlayerController::TurnShip);
-		OceanityInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AOceanityPlayerController::LookCamera);
+		OceanityInputComponent->BindAction(AccelerateAction, ETriggerEvent::Triggered, this, &ThisClass::AccelerateShip);
+		OceanityInputComponent->BindAction(AccelerateAction, ETriggerEvent::Completed, this, &ThisClass::StopAcceleratingShip);
+		OceanityInputComponent->BindAction(TurnAction, ETriggerEvent::Triggered, this, &ThisClass::TurnShip);
+		OceanityInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ThisClass::LookCamera);
+
+		OceanityInputComponent->BindAbilityActions(
+			InputConfig,
+			this,
+			&ThisClass::AbilityInputTagPressed,
+			&ThisClass::AbilityInputTagReleased,
+			&ThisClass::AbilityInputTagHeld);
 	}
 }
 

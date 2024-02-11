@@ -6,9 +6,12 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "HUD/CommonHUD.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "PlayerController/OceanityPlayerController.h"
 #include "PlayerState/OceanityPlayerState.h"
+#include "UI/HUD/OceanityHUD.h"
 
 // Sets default values
 APlayerShip::APlayerShip()
@@ -54,13 +57,22 @@ void APlayerShip::OnRep_PlayerState()
 
 void APlayerShip::InitAbilityActorInfo()
 {
-	AOceanityPlayerState* PlayerState = GetPlayerState<AOceanityPlayerState>();
-	checkf(PlayerState, TEXT("PlayerState is not valid!"));
+	AOceanityPlayerState* OceanityPlayerState = GetPlayerState<AOceanityPlayerState>();
+	if (!IsValid(OceanityPlayerState)) return;
 
-	AbilitySystemComponent = PlayerState->GetAbilitySystemComponent();
-	AttributeSet = PlayerState->GetAttributeSet();
-	PlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(PlayerState, this);
-	
+	AbilitySystemComponent = OceanityPlayerState->GetAbilitySystemComponent();
+	AttributeSet = OceanityPlayerState->GetAttributeSet();
+	OceanityPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(OceanityPlayerState, this);
+
+	if (AOceanityPlayerController* OceanityPlayerController = Cast<AOceanityPlayerController>(GetController()))
+	{
+		if (AOceanityHUD* OceanityHUD = Cast<AOceanityHUD>(OceanityPlayerController->GetHUD()))
+		{
+			OceanityHUD->InitOverlay();
+			OceanityHUD->InitOverlayWithParams(OceanityPlayerController, OceanityPlayerState, AbilitySystemComponent, AttributeSet);
+		}
+		InitializeAttributes();
+	}
 }
 
 void APlayerShip::BeginPlay()

@@ -3,19 +3,19 @@
 
 #include "PlayerState/OceanityPlayerState.h"
 
-#include "CommonAbilityComponent.h"
-#include "CommonAttributeSet.h"
+#include "AbilitySystem/OceanityAbilityComponent.h"
+#include "AbilitySystem/OceanityAttributeSet.h"
 
 AOceanityPlayerState::AOceanityPlayerState()
 {
 	NetUpdateFrequency = 100.0f;
 
-	AbilitySystemComponent = CreateDefaultSubobject<UCommonAbilityComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent = CreateDefaultSubobject<UOceanityAbilityComponent>(TEXT("AbilitySystemComponent"));
 	if (AbilitySystemComponent)
 	{
 		AbilitySystemComponent->SetIsReplicated(true);
 		AbilitySystemComponent->ReplicationMode = EGameplayEffectReplicationMode::Mixed;
 	}
 	
-	AttributeSet = CreateDefaultSubobject<UCommonAttributeSet>(TEXT("AttributeSet"));
+	AttributeSet = CreateDefaultSubobject<UOceanityAttributeSet>(TEXT("AttributeSet"));
 }

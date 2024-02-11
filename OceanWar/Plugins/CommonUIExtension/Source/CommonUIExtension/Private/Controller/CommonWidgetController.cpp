@@ -3,10 +3,10 @@
 
 #include "Controller/CommonWidgetController.h"
 
-void UCommonWidgetController::SetWidgetControllerParams(const FWidgetControllerParams& InParams)
+void UCommonWidgetController::BroadcastInitialValues()
 {
-	PlayerController = InParams.PlayerController;
-	PlayerState = InParams.PlayerState;
-	AbilitySystemComponent = InParams.AbilitySystemComponent;
-	AttributeSet = InParams.AttributeSet;
+}
+
+void UCommonWidgetController::BindCallbacksToDependencies()
+{
 }

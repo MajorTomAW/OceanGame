@@ -6,27 +6,6 @@
 #include "UObject/Object.h"
 #include "CommonWidgetController.generated.h"
 
-USTRUCT(BlueprintType)
-struct FWidgetControllerParams
-{
-	GENERATED_BODY();
-
-	FWidgetControllerParams() {}
-	FWidgetControllerParams(APlayerController* PC, APlayerState* PS, class UAbilitySystemComponent* ASC, class UAttributeSet* AS)
-		: PlayerController(PC), PlayerState(PS), AbilitySystemComponent(ASC), AttributeSet(AS) {}
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CommonUIExtension|References")
-	TObjectPtr<APlayerController> PlayerController;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CommonUIExtension|References")
-	TObjectPtr<APlayerState> PlayerState;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CommonUIExtension|References")
-	TObjectPtr<class UAbilitySystemComponent> AbilitySystemComponent;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CommonUIExtension|References")
-	TObjectPtr<class UAttributeSet> AttributeSet;
-};
 
 /**
  * 
@@ -37,18 +16,8 @@ class COMMONUIEXTENSION_API UCommonWidgetController : public UObject
 	GENERATED_BODY()
 
 public:
-	void SetWidgetControllerParams(const FWidgetControllerParams& InParams);
+	UFUNCTION(BlueprintCallable, Category = "CommonUIExtension|WidgetController")
+	virtual void BroadcastInitialValues();
 	
-protected:
-	UPROPERTY(BlueprintReadOnly, Category = "CommonUIExtension|References")
-	TObjectPtr<APlayerController> PlayerController;
-
-	UPROPERTY(BlueprintReadOnly, Category = "CommonUIExtension|References")
-	TObjectPtr<APlayerState> PlayerState;
-
-	UPROPERTY(BlueprintReadOnly, Category = "CommonUIExtension|References")
-	TObjectPtr<class UAbilitySystemComponent> AbilitySystemComponent;
-
-	UPROPERTY(BlueprintReadOnly, Category = "CommonUIExtension|References")
-	TObjectPtr<class UAttributeSet> AttributeSet;
+	virtual void BindCallbacksToDependencies();
 };

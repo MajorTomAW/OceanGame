@@ -6,6 +6,9 @@
 #include "AbilitySystemInterface.h"
 #include "OceanityShip.generated.h"
 
+enum class EEngineClassType : uint8;
+enum class ETurretClassType : uint8;
+enum class EHullClassType : uint8;
 class UGameplayAbility;
 class UGameplayEffect;
 class UAttributeSet;
@@ -67,6 +70,16 @@ protected:
 	/** Player data */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "OceanityShip|Combat")
 	FName WeaponTipSockedName = "WeaponTipSocket";
+
+	/** Ship Classes */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "OceanityShip")
+	EHullClassType HullClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "OceanityShip")
+	ETurretClassType TurretClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "OceanityShip")
+	EEngineClassType EngineClass;
 
 	void InitializeSpecificAttribute(TSubclassOf<UGameplayEffect> InGameplayEffect, float Level) const;
 

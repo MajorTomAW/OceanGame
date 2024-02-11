@@ -3,20 +3,20 @@
 
 #include "Ships/AIShip.h"
 
-#include "CommonAbilityComponent.h"
-#include "CommonAttributeSet.h"
+#include "AbilitySystem/OceanityAbilityComponent.h"
+#include "AbilitySystem/OceanityAttributeSet.h"
 
 
 AAIShip::AAIShip()
 {
-	AbilitySystemComponent = CreateDefaultSubobject<UCommonAbilityComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent = CreateDefaultSubobject<UOceanityAbilityComponent>(TEXT("AbilitySystemComponent"));
 	if (AbilitySystemComponent)
 	{
 		AbilitySystemComponent->SetIsReplicated(true);
 		AbilitySystemComponent->ReplicationMode = EGameplayEffectReplicationMode::Minimal;	
 	}
 	
-	AttributeSet = CreateDefaultSubobject<UCommonAttributeSet>(TEXT("AttributeSet"));
+	AttributeSet = CreateDefaultSubobject<UOceanityAttributeSet>(TEXT("AttributeSet"));
 }
 
 void AAIShip::BeginPlay()

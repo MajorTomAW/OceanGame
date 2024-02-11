@@ -23,23 +23,15 @@ public:
 	UPROPERTY()
 	TObjectPtr<UCommonPrimaryGameLayout> OverallUILayoutWidget;
 
-	UAttributeWidgetController* GetAttributeWidgetController(const FWidgetControllerParams& Params);
-
-	void InitOverlay(APlayerController* PC, APlayerState* PS, class UAbilitySystemComponent* ASC, class UAttributeSet* AS);
+	virtual void InitOverlay();
 	
 protected:
 	virtual void BeginPlay() override;
-
-private:
-	UPROPERTY()
-	TObjectPtr<UAttributeWidgetController> AttributeWidgetController;
 	
+private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Layouts", meta = (AllowPrivateAccess = "true"))
 	TMap<UPARAM(DisplayName = "Layer Tag", meta = (Categories = "UI.Layer")) FGameplayTag, TSubclassOf<UCommonExtendedActivatableWidget>> LayerClasses;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Layouts", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UCommonPrimaryGameLayout> OverallUILayoutWidgetClass;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Controllers")
-	TSubclassOf<UAttributeWidgetController> AttributeWidgetControllerClass;
 };

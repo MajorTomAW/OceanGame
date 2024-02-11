@@ -4,6 +4,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "GameplayEffect.h"
+#include "AbilitySystem/FunctionLibraries/OceanityAbilityFunctionLibrary.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -110,10 +111,30 @@ void AOceanityShip::Tick(float DeltaSeconds)
 
 void AOceanityShip::AddStartupGameplayAbilities()
 {
+	if (AbilitySystemComponent)
+	{
+		UOceanityAbilityFunctionLibrary::AddStartupAbilities(
+			this,
+			TurretClass,
+			EngineClass,
+			HullClass,
+			AbilitySystemComponent
+			);
+	}
 }
 
 void AOceanityShip::InitializeAttributes() const
 {
+	if (AbilitySystemComponent)
+	{
+		UOceanityAbilityFunctionLibrary::InitializeDefaultAttribute(
+			this,
+			TurretClass,
+			EngineClass,
+			HullClass,
+			AbilitySystemComponent
+			);
+	}
 }
 
 void AOceanityShip::BeginPlay()
