@@ -12,6 +12,8 @@ UAttributeWidgetController* AOceanityHUD::GetAttributeWidgetController(const FWi
 	{
 		AttributeWidgetController = NewObject<UAttributeWidgetController>(this, AttributeWidgetControllerClass);
 		AttributeWidgetController->SetWidgetControllerParams(Params);
+		AttributeWidgetController->BroadcastInitialValues();
+		AttributeWidgetController->BindCallbacksToDependencies();
 	}
 	return AttributeWidgetController;
 }
@@ -23,6 +25,8 @@ UShipCustomizationWidgetController* AOceanityHUD::GetShipCustomizationWidgetCont
 	{
 		ShipCustomizationWidgetController = NewObject<UShipCustomizationWidgetController>(this,ShipCustomizationWidgetControllerClass);
 		ShipCustomizationWidgetController->SetWidgetControllerParams(Params);
+		ShipCustomizationWidgetController->BindCallbacksToDependencies();
+		ShipCustomizationWidgetController->BindCallbacksToDependencies();
 	}
 	return ShipCustomizationWidgetController;
 }

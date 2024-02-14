@@ -54,16 +54,6 @@ AOceanityShip::AOceanityShip()
 		EngineMesh->SetupAttachment(GetMesh(), FName("EngineMeshSocket"));
 		EngineMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);	
 	}
-
-	// Ship Hitbox
-	ShipHitbox = CreateDefaultSubobject<UCapsuleComponent>(TEXT("ShipHitbox"));
-	if (ShipHitbox)
-	{
-		ShipHitbox->SetupAttachment(GetMesh());
-		ShipHitbox->SetCollisionResponseToAllChannels(ECR_Ignore);
-		ShipHitbox->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
-		ShipHitbox->SetRelativeRotation(FRotator(90.f, 0.f, 0.f));
-	}
 }
 
 void AOceanityShip::Multicast_HandleDeath_Implementation()
@@ -109,7 +99,7 @@ void AOceanityShip::Tick(float DeltaSeconds)
 	AimOffset(DeltaSeconds);
 }
 
-void AOceanityShip::AddStartupGameplayAbilities()
+void AOceanityShip::AddStartupGameplayAbilities() const
 {
 	if (AbilitySystemComponent)
 	{

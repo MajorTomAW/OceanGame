@@ -7,7 +7,12 @@ void UCommonExtendedActivatableWidget::SetWidgetController(UObject* InWidgetCont
 {
 	WidgetController = InWidgetController;
 	if (IsValid(InWidgetController))
-	WidgetControllerSet(InWidgetController);
+	OnWidgetControllerSet(WidgetController);
+}
+
+void UCommonExtendedActivatableWidget::OnWidgetControllerSet(UObject* InWidgetController)
+{
+	WidgetControllerSet_BP(InWidgetController);
 }
 
 void UCommonExtendedActivatableWidget::NativeOnActivated()

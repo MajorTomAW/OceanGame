@@ -21,8 +21,11 @@ class OCEANWAR_API UAttributeWidgetController : public UOceanityWidgetController
 public:
 	virtual void BroadcastInitialValues() override;
 	virtual void BindCallbacksToDependencies() override;
-	void BroadcastAttributeInfo(const FGameplayTag& Tag, const FGameplayAttribute& Attribute) const;
 
 	UPROPERTY(BlueprintAssignable)
 	FValueChangedSignature OnAttributeValueChangedDelegate;
+
+private:
+	void BroadcastAttributeInfo(const FGameplayTag& Tag, const FGameplayAttribute& Attribute) const;
+	
 };

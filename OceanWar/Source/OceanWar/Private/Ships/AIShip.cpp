@@ -5,6 +5,7 @@
 
 #include "AbilitySystem/OceanityAbilityComponent.h"
 #include "AbilitySystem/OceanityAttributeSet.h"
+#include "Components/WidgetComponent.h"
 
 
 AAIShip::AAIShip()
@@ -17,6 +18,14 @@ AAIShip::AAIShip()
 	}
 	
 	AttributeSet = CreateDefaultSubobject<UOceanityAttributeSet>(TEXT("AttributeSet"));
+
+	HealthBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidgetComponent"));
+	if (HealthBarWidgetComponent)
+	{
+		HealthBarWidgetComponent->SetupAttachment(GetMesh());
+		HealthBarWidgetComponent->SetDrawAtDesiredSize(true);
+		HealthBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	}
 }
 
 void AAIShip::BeginPlay()
@@ -28,5 +37,7 @@ void AAIShip::BeginPlay()
 void AAIShip::InitAbilityActorInfo()
 {
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	InitializeAttributes();
+	AddStartupGameplayAbilities();
 }
 

@@ -4,6 +4,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "Interfaces/CombatInterface.h"
 #include "OceanityShip.generated.h"
 
 enum class EEngineClassType : uint8;
@@ -16,7 +17,7 @@ class UAnimMontage;
 class UAbilitySystemComponent;
 
 UCLASS(Abstract)
-class OCEANWAR_API AOceanityShip : public ACharacter, public IAbilitySystemInterface
+class OCEANWAR_API AOceanityShip : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
 	GENERATED_BODY()
 
@@ -41,6 +42,13 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE float GetAO_Pitch() const {return AO_Pitch ;}
+
+	/** ICombatInterface */
+	virtual FVector GetCombatSocketLocation() const override
+	{
+		return WeaponMesh->GetSocketLocation(WeaponTipSockedName);
+	};
+	/** End ICombatInterface */
 	
 protected:
 	/** Ability System */
@@ -52,7 +60,7 @@ protected:
 
 	virtual void InitAbilityActorInfo();
 	virtual void Tick(float DeltaSeconds) override;
-	void AddStartupGameplayAbilities();
+	void AddStartupGameplayAbilities() const;
 
 	/** Components */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
@@ -63,9 +71,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<USkeletalMeshComponent> EngineMesh;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	TObjectPtr<UCapsuleComponent> ShipHitbox;
 
 	/** Player data */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "OceanityShip|Combat")

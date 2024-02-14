@@ -32,8 +32,10 @@ public:
 	void SetWidgetController(UObject* InWidgetController);
 
 protected:
-	UFUNCTION(BlueprintImplementableEvent)
-	void WidgetControllerSet(UObject* InWidgetController);
+	virtual void OnWidgetControllerSet(UObject* InWidgetController);
+	
+	UFUNCTION(BlueprintImplementableEvent, DisplayName = "Widget Controller Set")
+	void WidgetControllerSet_BP(UObject* InWidgetController);
 	
 	virtual void NativeOnActivated() override;
 

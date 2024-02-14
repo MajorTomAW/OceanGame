@@ -64,6 +64,7 @@ void UOceanityAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCa
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
+		UE_LOG(LogTemp, Warning, TEXT("Health: %f"), GetHealth());
 	}
 	else if (Data.EvaluatedData.Attribute == GetAmmoAttribute())
 	{
