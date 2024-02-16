@@ -34,12 +34,12 @@ public:
 protected:
 	virtual void OnWidgetControllerSet(UObject* InWidgetController);
 	
-	UFUNCTION(BlueprintImplementableEvent, DisplayName = "Widget Controller Set")
-	void WidgetControllerSet_BP(UObject* InWidgetController);
+	UFUNCTION(BlueprintImplementableEvent, DisplayName = "On Widget Controller Set")
+	void WidgetControllerSet_BP(UObject* NewWidgetController);
 	
 	virtual void NativeOnActivated() override;
 
 private:
-	UPROPERTY(EditDefaultsOnly, Category = "Input Mode")
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	EInputMode InputMode = EInputMode::All;
 };
