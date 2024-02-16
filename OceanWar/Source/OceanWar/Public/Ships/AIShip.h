@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "OceanityShip.h"
+#include "UI/Controller/AttributeWidgetController.h"
 #include "AIShip.generated.h"
 
 class UWidgetComponent;
@@ -16,9 +17,13 @@ class OCEANWAR_API AAIShip : public AOceanityShip
 public:
 	AAIShip();
 
+	FValueChangedSignature OnAttributeValueChangedDelegate;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
+	virtual void BindToAttributeDelegates();
+	virtual void BroadcastInitialAttributes();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<UWidgetComponent> HealthBarWidgetComponent;

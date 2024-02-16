@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "GameplayTagContainer.h"
 #include "ShipClassInfo.generated.h"
 
 
@@ -14,17 +13,10 @@ struct FShipClassDefaultInfo
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<USkeletalMesh> SkeletalMesh;
+	TObjectPtr<class UShipMeshInfo> MeshInfoAsset;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TArray<TSubclassOf<class UGameplayAbility>> DefaultAbilities;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TMap<FGameplayTag, float> DefaultAttributes;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TMap<FGameplayTag, float> DefaultDerivedAttributes;
-	
+	TObjectPtr<class UShipAbilitySetInfo> AbilitySetAsset;
 };
 /**
  * Base class for ship data assets.
