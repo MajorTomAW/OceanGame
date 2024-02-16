@@ -11,6 +11,7 @@
 #include "AbilitySystem/Data/Ship/HullClassInfo.h"
 #include "AbilitySystem/Data/Ship/ShipClassInfo.h"
 #include "AbilitySystem/Data/Ship/TurretClassInfo.h"
+#include "AbilitySystem/Data/Ship/AbilitySet/ShipAbilitySetInfo.h"
 #include "GameMode/OceanityGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "PlayerState/OceanityPlayerState.h"
@@ -70,9 +71,9 @@ void UOceanityAbilityFunctionLibrary::InitializeDefaultAttribute(
 		/** Attributes */
 		const FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(InitialGameplayEffect, 1.f, Context);
 		TMap<FGameplayTag, float> InitialDefaults;
-		InitialDefaults.Append(TurretDefaults.DefaultAttributes);
-		InitialDefaults.Append(EngineDefaults.DefaultAttributes);
-		InitialDefaults.Append(HullDefaults.DefaultAttributes);
+		InitialDefaults.Append(TurretDefaults.AbilitySetAsset->DefaultAttributes);
+		InitialDefaults.Append(EngineDefaults.AbilitySetAsset->DefaultAttributes);
+		InitialDefaults.Append(HullDefaults.AbilitySetAsset->DefaultAttributes);
 
 		for (const auto& Pair : InitialDefaults)
 		{
@@ -83,9 +84,9 @@ void UOceanityAbilityFunctionLibrary::InitializeDefaultAttribute(
 		/** Derived Attributes */
 		const FGameplayEffectSpecHandle DerivedSpecHandle = ASC->MakeOutgoingSpec(DerivedInitialGameplayEffect, 1.f, Context);
 		TMap<FGameplayTag, float> DerivedInitialDefaults;
-		DerivedInitialDefaults.Append(TurretDefaults.DefaultDerivedAttributes);
-		DerivedInitialDefaults.Append(EngineDefaults.DefaultDerivedAttributes);
-		DerivedInitialDefaults.Append(HullDefaults.DefaultDerivedAttributes);
+		DerivedInitialDefaults.Append(TurretDefaults.AbilitySetAsset->DefaultDerivedAttributes);
+		DerivedInitialDefaults.Append(EngineDefaults.AbilitySetAsset->DefaultDerivedAttributes);
+		DerivedInitialDefaults.Append(HullDefaults.AbilitySetAsset->DefaultDerivedAttributes);
 
 		for (const auto& Pair : DerivedInitialDefaults)
 		{
@@ -112,9 +113,9 @@ void UOceanityAbilityFunctionLibrary::AddStartupAbilities(
 		TArray<TSubclassOf<UGameplayAbility>> InitialAbilities;
 
 		// Abilities
-		InitialAbilities.Append(TurretDefaults.DefaultAbilities);
-		InitialAbilities.Append(EngineDefaults.DefaultAbilities);
-		InitialAbilities.Append(HullDefaults.DefaultAbilities);
+		InitialAbilities.Append(TurretDefaults.AbilitySetAsset->DefaultAbilities);
+		InitialAbilities.Append(EngineDefaults.AbilitySetAsset->DefaultAbilities);
+		InitialAbilities.Append(HullDefaults.AbilitySetAsset->DefaultAbilities);
 
 		// Common Abilities
 		InitialAbilities.Append(GMB->TurretClassDefaults->CommonAbilities);
@@ -126,4 +127,17 @@ void UOceanityAbilityFunctionLibrary::AddStartupAbilities(
 			OceanityASC->AddStartupGameplayAbilities(InitialAbilities);
 		}
 	}
+}
+
+FName UOceanityAbilityFunctionLibrary::GetMontageSectionBasedOnRangedFloat(float Value,
+	TArray<FRangedMontageSection> Sections)
+{
+	for (const auto& Section : Sections)
+	{
+		if (Section.MinValue <= Value && Section.MaxValue >= Value)
+		{
+			return Section.SectionName;
+		}
+	}
+	return FName("None");
 }

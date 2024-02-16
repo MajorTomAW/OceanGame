@@ -8,6 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "OceanWar/OceanWar.h"
 
 // Sets default values
@@ -86,7 +87,7 @@ void AOceanityShip::AimOffset(float DeltaTime)
 		const FVector2D OutRange(-90.f, 0.f);
 		AO_Pitch = FMath::GetMappedRangeValueClamped(InRange, OutRange, AO_Pitch);
 	}
-	//UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("AO_Yaw: %f"), AO_Yaw), true, true, FLinearColor::Red, 0.f);
+	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("AO_Yaw: %f"), AO_Yaw), true, true, FLinearColor::Red, 0.f, FName("Yaw"));
 }
 
 void AOceanityShip::InitAbilityActorInfo()

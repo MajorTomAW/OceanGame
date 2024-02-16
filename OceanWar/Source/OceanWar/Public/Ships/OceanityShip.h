@@ -48,6 +48,14 @@ public:
 	{
 		return WeaponMesh->GetSocketLocation(WeaponTipSockedName);
 	};
+	virtual USkeletalMeshComponent* GetWeaponMesh() const override
+	{
+		return WeaponMesh;
+	}
+	virtual UAnimMontage* GetWeaponMontage() const override
+	{
+		return ShootMontage;
+	}
 	/** End ICombatInterface */
 	
 protected:
@@ -90,6 +98,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "OceanityShip|Animations")
 	TObjectPtr<UAnimMontage> HitReactMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "OceanityShip|Animations")
+	TObjectPtr<UAnimMontage> ShootMontage;
 	
 	/** Aiming */
 	float AO_Yaw;

@@ -17,14 +17,14 @@ class OCEANWAR_API UOceanityAnimInstance : public UAnimInstance
 public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
-
-private:
-	UPROPERTY(BlueprintReadOnly, Category = "OceanityAnimInstance", meta = (AllowPrivateAccess = "true"))
+	
+	UPROPERTY(BlueprintReadOnly, Category = "OceanityAnimInstance")
 	TObjectPtr<ACharacter> OwnedCharacter;
 
 	UPROPERTY(BlueprintReadOnly, Category = "OceanityAnimInstance", meta = (AllowPrivateAccess = "true"))
 	FRotator OwnedCharacterRotation;
 
+private:
 	UPROPERTY(BlueprintReadOnly, Category = "OceanityAnimInstance", meta = (AllowPrivateAccess = "true"))
 	float Speed;
 

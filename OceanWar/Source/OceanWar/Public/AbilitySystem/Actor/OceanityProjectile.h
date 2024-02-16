@@ -59,4 +59,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Effects|Life")
 	float LifeSpan = 60.f;
+
+	void PlayImpactSound(uint8 ImpactIndex) const;
 };

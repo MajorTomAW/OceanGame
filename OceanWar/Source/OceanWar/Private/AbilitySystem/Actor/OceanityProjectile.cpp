@@ -6,6 +6,8 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "OceanityGameplayTags.h"
+#include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -81,14 +83,37 @@ void AOceanityProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedCompone
 {
 	if (OtherActor == this || OtherActor == GetOwner() || OtherActor == GetInstigator()) return;
 	
-	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
+	PlayImpactSound(1);
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffectShip, GetActorLocation());
 
 	if (HasAuthority())
 	{
 		if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 		{
+			FGameplayEffectContextHandle Context = DamageEffectSpecHandle.Data->GetContext();
+			FHitResult HitResult;
+			HitResult.TraceStart = GetActorLocation();
+			HitResult.TraceEnd = OtherActor->GetActorLocation();
+			Context.AddHitResult(HitResult);
+			DamageEffectSpecHandle.Data->SetContext(Context);
 			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+
+			/*
+			 * Send Gameplay Event to the target
+			 */
+			FGameplayEventData EventData;
+			EventData.Target = OtherActor;
+			EventData.Instigator = GetInstigator();
+			EventData.ContextHandle = Context;
+			
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OtherActor, FOceanityGameplayTags::Get().Ability_Event_HitReact, EventData);
+
+			FGameplayEventData HitEventData;
+			HitEventData.Instigator = GetInstigator();
+			HitEventData.Target = OtherActor;
+			HitEventData.ContextHandle = Context;
+			HitEventData.EventTag = FOceanityGameplayTags::Get().GameplayEvent_Hit_Success;
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Owner, FOceanityGameplayTags::Get().GameplayEvent_Hit_Success, HitEventData);
 		}
 		Destroy();
 	}
@@ -102,13 +127,21 @@ void AOceanityProjectile::OnObjectCollisionOverlap(UPrimitiveComponent* Overlapp
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor == this || OtherActor == GetOwner() || OtherActor == GetInstigator()) return;
-
-	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
+	PlayImpactSound(0);
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffectObject, GetActorLocation());
 
 	if (HasAuthority())
 	{
 		Destroy();
+	}
+}
+
+void AOceanityProjectile::PlayImpactSound(uint8 ImpactIndex) const
+{
+	if (UAudioComponent* AudioComponent = UGameplayStatics::SpawnSoundAtLocation(this, ImpactSound, GetActorLocation()))
+	{
+		AudioComponent->SetIntParameter(FName("Impact Index"), ImpactIndex);
+		AudioComponent->Play();
 	}
 }
 

@@ -5,6 +5,7 @@
 
 #include "GameplayEffectExtension.h"
 #include "OceanityGameplayTags.h"
+#include "Log/OceanityLogChannels.h"
 #include "Net/UnrealNetwork.h"
 
 UOceanityAttributeSet::UOceanityAttributeSet()
@@ -64,7 +65,7 @@ void UOceanityAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCa
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
-		UE_LOG(LogTemp, Warning, TEXT("Health: %f"), GetHealth());
+		UE_LOG(LogOceanityGAS, Warning, TEXT("Health: %f"), GetHealth());
 	}
 	else if (Data.EvaluatedData.Attribute == GetAmmoAttribute())
 	{
@@ -74,9 +75,66 @@ void UOceanityAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCa
 	{
 		SetShield(FMath::Clamp(GetShield(), 0.0f, GetMaxShield()));
 	}
-	else if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
+	else if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute() && Data.EvaluatedData.Magnitude > 0.f)
 	{
-		//TODO: Apply damage
+		const float LocalIncomingDamage = GetIncomingDamage();
+		SetIncomingDamage(0.f);
+		bool bIsDead = false;
+
+		FGameplayTagContainer DamageTags;
+
+		if (GetShield() > 0.f)
+		{
+			/*
+			*	If we have shield, remove the damage from there first
+			*	If there is still damage left over, ignore the rest since it's been absorbed by shield
+			*/
+			const float NewShield = FMath::Max(0.f, GetShield() - LocalIncomingDamage); // New Shield should be 0 or greater
+			SetShield(NewShield);
+
+			if (GetShield() > 0.f)
+			{
+				DamageTags.AddTag(FOceanityGameplayTags::Get().Damage_DamageType_Shield);
+			}
+			else
+			{
+				DamageTags.AddTag(FOceanityGameplayTags::Get().Damage_DamageType_Shield_Destroyed);
+			}
+		}
+		else
+		{
+			/*
+			*	No shield, take health damage
+			*/
+			const float NewHealth = FMath::Max(0.f, GetHealth() - LocalIncomingDamage); // New Health should be 0 or greater
+			SetHealth(NewHealth);
+
+			bIsDead = GetHealth() <= 0.f;
+			if (bIsDead)
+			{
+				DamageTags.AddTag(FOceanityGameplayTags::Get().Damage_DamageType_Health_Dead);
+			}
+		}
+
+		/*
+		if (bIsDead)
+		{
+			// Not Dead, try activate the hit react ability
+			if (!Props.TargetASC->TryActivateAbilitiesByTag(FOceanityGameplayTags::Get().Ability_Event_ShipSunk.GetSingleTagContainer()))
+			{
+				UE_LOG(LogOceanityGAS, Error, TEXT("UOceanityAttributeSet::PostGameplayEffectExecute - Failed to activate ship sunk ability"));
+			}
+		}
+		else
+		{
+			// Dead, try activate the sink ship ability
+			if (!Props.TargetASC->TryActivateAbilitiesByTag(FOceanityGameplayTags::Get().Ability_Event_HitReact.GetSingleTagContainer()))
+			{
+				UE_LOG(LogOceanityGAS, Error, TEXT("UOceanityAttributeSet::PostGameplayEffectExecute - Failed to activate ship hit react ability"));	
+			}
+		}
+		const FHitResult* MyResult = Data.EffectSpec.GetContext().GetHitResult();*/
+		//TODO: Show Damage Text based on DamageTags
 	}
 }
 

@@ -44,6 +44,17 @@ void FOceanityGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.InputTag_4 = TagsManager.AddNativeGameplayTag(FName("Input.InputTag.4"), TEXT("4"));
 	GameplayTags.InputTag_5 = TagsManager.AddNativeGameplayTag(FName("Input.InputTag.5"), TEXT("5"));
 
+	/** Damage Tags */
+	GameplayTags.Damage_DamageType_Health = TagsManager.AddNativeGameplayTag(FName("Damage.DamageType.Health"), TEXT("Health Damage Type"));
+	GameplayTags.Damage_DamageType_Health_Dead = TagsManager.AddNativeGameplayTag(FName("Damage.DamageType.Health.Dead"), TEXT("Dead Health Damage Type"));
+	GameplayTags.Damage_DamageType_Shield = TagsManager.AddNativeGameplayTag(FName("Damage.DamageType.Shield"), TEXT("Shield Damage Type"));
+	GameplayTags.Damage_DamageType_Shield_Destroyed = TagsManager.AddNativeGameplayTag(FName("Damage.DamageType.Shield.Destroyed"), TEXT("Destroyed Shield Damage Type"));
+	
+
+	/** Gameplay Event Tags */
+	GameplayTags.GameplayEvent_Hit_Success = TagsManager.AddNativeGameplayTag(FName("GameplayEvent.Hit.Success"), TEXT("Hit Success Event"));
+	GameplayTags.GameplayEvent_Hit_Fail = TagsManager.AddNativeGameplayTag(FName("GameplayEvent.Hit.Fail"), TEXT("Hit Fail Event"));
+	
 	/** Ability Tags */
 	// Ability Descriptors
 	GameplayTags.Ability_Descriptor_Melee = TagsManager.AddNativeGameplayTag(FName("Ability.Descriptor.Melee"), TEXT("Melee Ability"));

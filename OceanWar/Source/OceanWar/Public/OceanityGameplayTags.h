@@ -57,6 +57,15 @@ struct FOceanityGameplayTags
  FGameplayTag InputTag_4;
  FGameplayTag InputTag_5;
 
+ /** Damage Tags */
+ FGameplayTag Damage_DamageType_Shield;
+ FGameplayTag Damage_DamageType_Shield_Destroyed;
+ FGameplayTag Damage_DamageType_Health;
+ FGameplayTag Damage_DamageType_Health_Dead;
+
+ /** Gameplay Events */
+ FGameplayTag GameplayEvent_Hit_Success;
+ FGameplayTag GameplayEvent_Hit_Fail;
 
  /** Ability Tags */
  // Descriptor

@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "OceanityGameplayTags.h"
+#include "AbilitySystem/OceanityAttributeSet.h"
 #include "AbilitySystem/Actor/OceanityProjectile.h"
 #include "Interfaces/CombatInterface.h"
 
@@ -47,8 +48,13 @@ void UOceanityProjectileAbility::SpawnProjectile(float PitchOffset)
 			{
 				FGameplayEffectContextHandle ContextHandle = SourceASC->MakeEffectContext();
 				ContextHandle.AddSourceObject(GetAvatarActorFromActorInfo());
-				FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, .1, ContextHandle);
-				UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, FOceanityGameplayTags::Get().Attributes_Primary_Damage, 10.f);
+				const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, .1, ContextHandle);
+				float Damage = 0.f;
+				if (const UOceanityAttributeSet* AS = Cast<UOceanityAttributeSet>(SourceASC->GetAttributeSet(UOceanityAttributeSet::StaticClass())))
+				{
+					Damage = AS->GetDamage();
+				}
+				UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, FOceanityGameplayTags::Get().Attributes_Primary_Damage, Damage);
 				Projectile->DamageEffectSpecHandle = SpecHandle;
 			}
 			
