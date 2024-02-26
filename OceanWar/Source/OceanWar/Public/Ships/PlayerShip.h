@@ -35,6 +35,11 @@ public:
 
 protected:
 	virtual void InitAbilityActorInfo() override;
+
+	virtual void ManageEnemyHealthBarVisibility(bool bVisible, UWidgetComponent* WidgetComponent) override;
+
+	UFUNCTION(Client, Reliable)
+	void ClientManageEnemyHealthBarVisibility(bool bVisible, UWidgetComponent* WidgetComponent);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<USpringArmComponent> SpringArmComponent;

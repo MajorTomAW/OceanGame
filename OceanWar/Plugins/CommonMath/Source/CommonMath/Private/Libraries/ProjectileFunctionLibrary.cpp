@@ -14,7 +14,7 @@ UProjectileFunctionLibrary::UProjectileFunctionLibrary(const FObjectInitializer&
 void UProjectileFunctionLibrary::CalculateProjectileLaunchAngle(FVector StartLocation, FVector TargetLocation,
                                                                 float LaunchSpeed, float OverrideGravityZ, bool bSmallestAngle, bool& bIsReachable, float& OutAngle)
 {
-	const float Gravity = OverrideGravityZ * UConversionsFunctionLibrary::GetGravityConstantInCm();
+	const float Gravity = OverrideGravityZ * UConversionsFunctionLibrary::GetGravityConstantInCmS();
 	const float Distance = FVector::DistXY(StartLocation, TargetLocation);
 	float Height = FMath::Abs(TargetLocation.Z - StartLocation.Z);
 	if (bSmallestAngle) Height = FMath::Abs(TargetLocation.Z - 100.f - StartLocation.Z);

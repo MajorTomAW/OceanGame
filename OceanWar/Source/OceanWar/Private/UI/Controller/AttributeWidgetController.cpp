@@ -4,6 +4,10 @@
 #include "UI/Controller/AttributeWidgetController.h"
 
 #include "CommonAttributeSet.h"
+#include "AbilitySystem/OceanityAbilityComponent.h"
+#include "AbilitySystem/FunctionLibraries/OceanityAbilityFunctionLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "UI/Data/Attributes/AbilityInfo.h"
 
 void UAttributeWidgetController::BroadcastInitialValues()
 {
@@ -11,6 +15,18 @@ void UAttributeWidgetController::BroadcastInitialValues()
 	for (auto& Pair : AS->TagsToAttributes)
 	{
 		BroadcastAttributeInfo(Pair.Key, Pair.Value());		
+	}
+
+	if (UOceanityAbilityComponent* OceanityASC = Cast<UOceanityAbilityComponent>(AbilitySystemComponent))
+	{
+		if (OceanityASC->bStartupAbilitiesGiven)
+		{
+			OnInitializeStartupAbilities(OceanityASC);
+		}
+		else
+		{
+			OceanityASC->OnAbilitiesGivenDelegate.AddUObject(this, &ThisClass::OnInitializeStartupAbilities);	
+		}
 	}
 }
 
@@ -25,6 +41,25 @@ void UAttributeWidgetController::BindCallbacksToDependencies()
 				BroadcastAttributeInfo(Pair.Key, Pair.Value());
 			});
 	}
+}
+
+void UAttributeWidgetController::OnInitializeStartupAbilities(UOceanityAbilityComponent* AbilityComponent) const
+{
+	if (!AbilityComponent->bStartupAbilitiesGiven) return;
+
+	FForEachAbilitySignature Delegate;
+	Delegate.BindLambda(
+		[this] (const FGameplayAbilitySpec& Spec)
+		{
+			FOceanityAbilityInfo AbilityInfo = AbilityDataAsset->FindAbilityInfoByTag(UOceanityAbilityFunctionLibrary::GetAbilityTagFromSpec(Spec));
+			if (!AbilityInfo.AbilityTag.IsValid() || !AbilityInfo.bShouldShowInUI) return;
+			AbilityInfo.InputTag = UOceanityAbilityFunctionLibrary::GetAbilityInputTagFromSpec(Spec);
+			AbilityInfo.InputInfo = UOceanityAbilityFunctionLibrary::GetAbilityInputInfoFromTag(AbilityInfo.InputTag, AbilityInputDataAsset);
+			UKismetSystemLibrary::PrintString(this, Spec.Ability->GetName(), true, false, FLinearColor::Green, 5.f);
+			OnAbilityInfoChangedDelegate.Broadcast(AbilityInfo);
+		});
+
+	AbilityComponent->ForEachAbility(Delegate);
 }
 
 void UAttributeWidgetController::BroadcastAttributeInfo(const FGameplayTag& Tag, const FGameplayAttribute& Attribute) const

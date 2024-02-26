@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
 
+class UWidgetComponent;
 // This class does not need to be modified.
 UINTERFACE()
 class UCombatInterface : public UInterface
@@ -25,4 +26,6 @@ public:
 	virtual FVector GetCombatSocketLocation() const {return FVector::ZeroVector; }
 	virtual UAnimMontage* GetWeaponMontage() const { return nullptr; }
 	virtual USkeletalMeshComponent* GetWeaponMesh() const { return nullptr; }
+
+	virtual void ManageEnemyHealthBarVisibility(bool bVisible, UWidgetComponent* WidgetComponent) {};
 };

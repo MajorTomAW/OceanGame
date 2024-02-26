@@ -35,15 +35,6 @@ void FOceanityGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Attributes_Boost_Cooldown = TagsManager.AddNativeGameplayTag(FName("Attributes.Boost.Cooldown"), TEXT("Boost cooldown"));
 	GameplayTags.Attributes_Boost_Speed = TagsManager.AddNativeGameplayTag(FName("Attributes.Boost.Speed"), TEXT("Boost speed"));
 
-	/** Input Tags */
-	GameplayTags.InputTag_LMB = TagsManager.AddNativeGameplayTag(FName("Input.InputTag.LMB"), TEXT("Left mouse button"));
-	GameplayTags.InputTag_RMB = TagsManager.AddNativeGameplayTag(FName("Input.InputTag.RMB"), TEXT("Right mouse button"));
-	GameplayTags.InputTag_1 = TagsManager.AddNativeGameplayTag(FName("Input.InputTag.1"), TEXT("1"));
-	GameplayTags.InputTag_2 = TagsManager.AddNativeGameplayTag(FName("Input.InputTag.2"), TEXT("2"));
-	GameplayTags.InputTag_3 = TagsManager.AddNativeGameplayTag(FName("Input.InputTag.3"), TEXT("3"));
-	GameplayTags.InputTag_4 = TagsManager.AddNativeGameplayTag(FName("Input.InputTag.4"), TEXT("4"));
-	GameplayTags.InputTag_5 = TagsManager.AddNativeGameplayTag(FName("Input.InputTag.5"), TEXT("5"));
-
 	/** Damage Tags */
 	GameplayTags.Damage_DamageType_Health = TagsManager.AddNativeGameplayTag(FName("Damage.DamageType.Health"), TEXT("Health Damage Type"));
 	GameplayTags.Damage_DamageType_Health_Dead = TagsManager.AddNativeGameplayTag(FName("Damage.DamageType.Health.Dead"), TEXT("Dead Health Damage Type"));
@@ -54,22 +45,12 @@ void FOceanityGameplayTags::InitializeNativeGameplayTags()
 	/** Gameplay Event Tags */
 	GameplayTags.GameplayEvent_Hit_Success = TagsManager.AddNativeGameplayTag(FName("GameplayEvent.Hit.Success"), TEXT("Hit Success Event"));
 	GameplayTags.GameplayEvent_Hit_Fail = TagsManager.AddNativeGameplayTag(FName("GameplayEvent.Hit.Fail"), TEXT("Hit Fail Event"));
+	GameplayTags.GameplayEvent_Ability_Shoot = TagsManager.AddNativeGameplayTag(FName("GameplayEvent.Ability.Shoot"), TEXT("Shoot Ability Event"));
 	
 	/** Ability Tags */
-	// Ability Descriptors
-	GameplayTags.Ability_Descriptor_Melee = TagsManager.AddNativeGameplayTag(FName("Ability.Descriptor.Melee"), TEXT("Melee Ability"));
-	GameplayTags.Ability_Descriptor_Ranged = TagsManager.AddNativeGameplayTag(FName("Ability.Descriptor.Ranged"), TEXT("Ranged Ability"));
-	GameplayTags.Ability_Descriptor_Boost = TagsManager.AddNativeGameplayTag(FName("Ability.Descriptor.Boost"), TEXT("Boost Ability"));
-	GameplayTags.Ability_Descriptor_Melee_Launch = TagsManager.AddNativeGameplayTag(FName("Ability.Descriptor.Melee.Launch"), TEXT("Launch Melee Ability"));
-	GameplayTags.Ability_Descriptor_Ranged_Shoot = TagsManager.AddNativeGameplayTag(FName("Ability.Descriptor.Ranged.Shoot"), TEXT("Shoot Ranged Ability"));
-	GameplayTags.Ability_Descriptor_Reload_Ammo = TagsManager.AddNativeGameplayTag(FName("Ability.Descriptor.Reload.Ammo"), TEXT("Reload Ammo Ability"));
 	// Ability Events
 	GameplayTags.Ability_Event_ShipSunk = TagsManager.AddNativeGameplayTag(FName("Ability.Event.ShipSunk"), TEXT("Ship Sunk Event"));
 	GameplayTags.Ability_Event_HitReact = TagsManager.AddNativeGameplayTag(FName("Ability.Event.HitReact"), TEXT("Hit React Event"));
 	GameplayTags.Ability_Event_Knockback = TagsManager.AddNativeGameplayTag(FName("Ability.Event.Knockback"), TEXT("Knockback Event"));
-	// Ability Cooldowns
-	GameplayTags.Ability_Cooldown_Boost = TagsManager.AddNativeGameplayTag(FName("Ability.Cooldown.Boost"), TEXT("Boost Cooldown"));
-	GameplayTags.Ability_Cooldown_Ranged_Shoot = TagsManager.AddNativeGameplayTag(FName("Ability.Cooldown.Ranged.Shoot"), TEXT("Ranged Shoot Cooldown"));
-	GameplayTags.Ability_Cooldown_Melee_Launch = TagsManager.AddNativeGameplayTag(FName("Ability.Cooldown.Melee.Launch"), TEXT("Melee Launch Cooldown"));
 	
 }

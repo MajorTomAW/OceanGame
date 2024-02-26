@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "OceanityWidgetController.h"
-#include "AbilitySystem/Data/AttributeInfo.h"
+#include "UI/Data/Attributes/AttributeInfo.h"
 #include "ShipCustomizationWidgetController.generated.h"
 
 

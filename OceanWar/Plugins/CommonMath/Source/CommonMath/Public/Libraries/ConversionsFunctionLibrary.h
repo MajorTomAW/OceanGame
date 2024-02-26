@@ -19,7 +19,7 @@ class COMMONMATH_API UConversionsFunctionLibrary : public UBlueprintFunctionLibr
 	static float GetGravityConstant() {return 9.81f;}
 
 	UFUNCTION(BlueprintPure, Category = "Common Projectile|Gravity", meta = (DisplayName = "Get Gravity Constant in cm/s²", CompactNodeTitle = "G in cm/s²", Keywords = "gravity constant g cm/s²"))
-	static float GetGravityConstantInCm() {return 981.0f;}
+	static float GetGravityConstantInCmS() {return 981.0f;}
 
 	/** Conversions */
 	UFUNCTION(BlueprintPure, Category = "Common Math|Conversions", meta = (DisplayName = "Convert cm/s to km/h", CompactNodeTitle = "cm/s to km/h", Keywords = "convert cm/s km/h"))

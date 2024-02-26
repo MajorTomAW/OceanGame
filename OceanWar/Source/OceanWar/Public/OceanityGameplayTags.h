@@ -47,16 +47,6 @@ struct FOceanityGameplayTags
  FGameplayTag Attributes_Boost_Cooldown;
  FGameplayTag Attributes_Boost_Speed;
 
-
- /** Input Tags */
- FGameplayTag InputTag_LMB;
- FGameplayTag InputTag_RMB;
- FGameplayTag InputTag_1;
- FGameplayTag InputTag_2;
- FGameplayTag InputTag_3;
- FGameplayTag InputTag_4;
- FGameplayTag InputTag_5;
-
  /** Damage Tags */
  FGameplayTag Damage_DamageType_Shield;
  FGameplayTag Damage_DamageType_Shield_Destroyed;
@@ -66,23 +56,13 @@ struct FOceanityGameplayTags
  /** Gameplay Events */
  FGameplayTag GameplayEvent_Hit_Success;
  FGameplayTag GameplayEvent_Hit_Fail;
+ FGameplayTag GameplayEvent_Ability_Shoot;
 
  /** Ability Tags */
- // Descriptor
- FGameplayTag Ability_Descriptor_Melee;
- FGameplayTag Ability_Descriptor_Melee_Launch;
- FGameplayTag Ability_Descriptor_Ranged;
- FGameplayTag Ability_Descriptor_Ranged_Shoot;
- FGameplayTag Ability_Descriptor_Boost;
- FGameplayTag Ability_Descriptor_Reload_Ammo;
  // Events
  FGameplayTag Ability_Event_ShipSunk;
  FGameplayTag Ability_Event_HitReact;
  FGameplayTag Ability_Event_Knockback;
- // Cooldowns
- FGameplayTag Ability_Cooldown_Boost;
- FGameplayTag Ability_Cooldown_Ranged_Shoot;
- FGameplayTag Ability_Cooldown_Melee_Launch;
 
 
 private:

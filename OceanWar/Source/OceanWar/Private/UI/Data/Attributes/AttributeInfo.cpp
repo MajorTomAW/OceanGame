@@ -1,7 +1,7 @@
 // Copyright © 2024 MajorT. All rights reserved.
 
 
-#include "AbilitySystem/Data/AttributeInfo.h"
+#include "UI/Data/Attributes/AttributeInfo.h"
 
 #include "Log/OceanityLogChannels.h"
 

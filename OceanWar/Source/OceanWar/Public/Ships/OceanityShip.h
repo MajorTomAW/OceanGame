@@ -4,9 +4,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "Equipment/Components/OceanityEquipmentComponent.h"
 #include "Interfaces/CombatInterface.h"
 #include "OceanityShip.generated.h"
 
+class UOceanityEquipmentComponent;
 enum class EEngineClassType : uint8;
 enum class ETurretClassType : uint8;
 enum class EHullClassType : uint8;
@@ -15,6 +17,8 @@ class UGameplayEffect;
 class UAttributeSet;
 class UAnimMontage;
 class UAbilitySystemComponent;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAbilityActorInfoSetSignature);
 
 UCLASS(Abstract)
 class OCEANWAR_API AOceanityShip : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
@@ -26,8 +30,8 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override { return AbilitySystemComponent; }
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
-
-	virtual void InitializeAttributes() const;
+	UOceanityEquipmentComponent* GetEquipmentComponent() const { return EquipmentComponent; }
+	
 	virtual void BeginPlay() override;
 
 	UPROPERTY(BlueprintReadOnly, Category = "OceanityShip|Combat")
@@ -46,17 +50,17 @@ public:
 	/** ICombatInterface */
 	virtual FVector GetCombatSocketLocation() const override
 	{
-		return WeaponMesh->GetSocketLocation(WeaponTipSockedName);
+		return WeaponMesh->GetSocketLocation(EquipmentComponent->GetAttackSocket());
 	};
 	virtual USkeletalMeshComponent* GetWeaponMesh() const override
 	{
 		return WeaponMesh;
 	}
-	virtual UAnimMontage* GetWeaponMontage() const override
-	{
-		return ShootMontage;
-	}
+	virtual UAnimMontage* GetWeaponMontage() const override;
 	/** End ICombatInterface */
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAbilityActorInfoSetSignature OnAbilityActorInfoSetDelegate;
 	
 protected:
 	/** Ability System */
@@ -66,9 +70,12 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UOceanityEquipmentComponent> EquipmentComponent;
+
 	virtual void InitAbilityActorInfo();
+	virtual void AbilityActorInfoSet();
 	virtual void Tick(float DeltaSeconds) override;
-	void AddStartupGameplayAbilities() const;
 
 	/** Components */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
@@ -79,10 +86,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<USkeletalMeshComponent> EngineMesh;
-
-	/** Player data */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "OceanityShip|Combat")
-	FName WeaponTipSockedName = "WeaponTipSocket";
 
 	/** Ship Classes */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "OceanityShip")
@@ -98,9 +101,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "OceanityShip|Animations")
 	TObjectPtr<UAnimMontage> HitReactMontage;
-
-	UPROPERTY(EditDefaultsOnly, Category = "OceanityShip|Animations")
-	TObjectPtr<UAnimMontage> ShootMontage;
 	
 	/** Aiming */
 	float AO_Yaw;
@@ -110,6 +110,17 @@ protected:
 	UPROPERTY()
 	TObjectPtr<AActor> CombatTarget;
 
+	/** Delegates */
+	UFUNCTION()
+	void OnTurretMeshChanged(USkeletalMesh* NewMesh);
+
+	UFUNCTION()
+	void OnEngineMeshChanged(USkeletalMesh* NewMesh);
+
+	UFUNCTION()
+	void OnHullMeshChanged(USkeletalMesh* NewMesh);
+	void BindFunctionsToEquipmentComponent();
+	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "OceanityShip|Material")
 	TObjectPtr<UMaterialInterface> HullMaterialInstance;

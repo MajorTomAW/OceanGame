@@ -3,7 +3,9 @@
 #include "Ships/PlayerShip.h"
 
 #include "AbilitySystemComponent.h"
+#include "OceanityGameTags.h"
 #include "Camera/CameraComponent.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "HUD/CommonHUD.h"
@@ -46,13 +48,14 @@ void APlayerShip::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 	InitAbilityActorInfo();
-	AddStartupGameplayAbilities();
+	EquipmentComponent->InitActorEquipment(TurretClass, EngineClass, HullClass);
 }
 
 void APlayerShip::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 	InitAbilityActorInfo();
+	EquipmentComponent->InitActorEquipment(TurretClass, EngineClass, HullClass);
 }
 
 void APlayerShip::InitAbilityActorInfo()
@@ -71,14 +74,27 @@ void APlayerShip::InitAbilityActorInfo()
 			OceanityHUD->InitOverlay();
 			OceanityHUD->InitOverlayWithParams(OceanityPlayerController, OceanityPlayerState, AbilitySystemComponent, AttributeSet);
 		}
-		InitializeAttributes();
 	}
+
+	Super::InitAbilityActorInfo();
+}
+
+void APlayerShip::ManageEnemyHealthBarVisibility(bool bVisible, UWidgetComponent* WidgetComponent)
+{
+	ClientManageEnemyHealthBarVisibility(bVisible, WidgetComponent);
+}
+
+void APlayerShip::ClientManageEnemyHealthBarVisibility_Implementation(bool bVisible, UWidgetComponent* WidgetComponent)
+{
+	WidgetComponent->SetHiddenInGame(!bVisible);
 }
 
 void APlayerShip::BeginPlay()
 {
 	Super::BeginPlay();
 	SpringArmLength = SpringArmComponent->TargetArmLength;
+	//BindFunctionsToEquipmentComponent();
+	//EquipmentComponent->InitActorEquipment(TurretClass, EngineClass, HullClass);
 }
 
 void APlayerShip::Tick(float DeltaSeconds)
@@ -93,7 +109,8 @@ void APlayerShip::ManageSpringArmLength()
 	if (!IsLocallyControlled()) return;
 	float CamDistance = 0.f;
 
-	const float AlternativeLength = FMath::Lerp(1500.f, 0.f, ( GetControlRotation().Pitch + 90.f ) / 180.f );
+	const float Alpha = FMath::Max(GetControlRotation().Pitch + 90.f, 0.f) / 180.f;
+	const float AlternativeLength = FMath::Lerp(1500.f, 0.f, Alpha);
 
 	FHitResult HitResult;
 	const FVector Start = SpringArmComponent->GetComponentLocation();
@@ -124,7 +141,8 @@ void APlayerShip::ManageSpringArmLength()
 	}
 
 	// Apply the new Spring Arm Length using interpolation
-	SpringArmComponent->TargetArmLength = FMath::FInterpTo<float>(SpringArmComponent->TargetArmLength, ScrollArmLength * CamDistance * MasterArmLength, GetWorld()->GetDeltaSeconds(), 2.5f);
+	const float InterpSpeed = FMath::Lerp<float>(3.f, 10.f, Alpha);
+	SpringArmComponent->TargetArmLength = FMath::FInterpTo<float>(SpringArmComponent->TargetArmLength, ScrollArmLength * CamDistance * MasterArmLength, GetWorld()->GetDeltaSeconds(), InterpSpeed);
 	SpringArmComponent->CameraRotationLagSpeed = FMath::Lerp<float>(100.f, 20.f, ScrollArmLength * MasterArmLength);
 	SpringArmComponent->CameraLagSpeed = FMath::Lerp<float>(100.f, 18.f, ScrollArmLength * MasterArmLength);
 }

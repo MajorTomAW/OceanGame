@@ -7,6 +7,7 @@
 #include "UI/Controller/AttributeWidgetController.h"
 #include "AIShip.generated.h"
 
+class APlayerShip;
 class UWidgetComponent;
 
 UCLASS()
@@ -27,4 +28,14 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<UWidgetComponent> HealthBarWidgetComponent;
+
+private:
+	FTimerHandle TimerHandle;
+	FTimerDelegate TimerDelegate;
+
+	UFUNCTION()
+	void ManageWidgetComponentVisibility() const;
+
+	UPROPERTY(EditDefaultsOnly, Category = "WidgetComponent")
+	float MaxWidgetDrawDistance = 4000.f;
 };

@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayEffectTypes.h"
+#include "OceanityGameTags.h"
 #include "AbilitySystem/OceanityAbilityComponent.h"
 #include "AbilitySystem/Data/Ship/EngineClassInfo.h"
 #include "AbilitySystem/Data/Ship/HullClassInfo.h"
@@ -141,3 +142,59 @@ FName UOceanityAbilityFunctionLibrary::GetMontageSectionBasedOnRangedFloat(float
 	}
 	return FName("None");
 }
+
+FGameplayTag UOceanityAbilityFunctionLibrary::GetAbilityTagFromSpec(const FGameplayAbilitySpec& Spec,
+	FGameplayTag TagToLookFor)
+{
+	if (!TagToLookFor.IsValid())
+	{
+		TagToLookFor = OceanityGameTags::Ability::Tag_Ability;
+	}
+
+	if (Spec.Ability)
+	{
+		for (const FGameplayTag& Tag : Spec.Ability.Get()->AbilityTags)
+		{
+			if (Tag.MatchesTag(TagToLookFor))
+			{
+				return Tag;
+			}
+		}
+	}
+
+	return FGameplayTag::EmptyTag;
+}
+
+FGameplayTag UOceanityAbilityFunctionLibrary::GetAbilityInputTagFromSpec(const FGameplayAbilitySpec& Spec,
+	FGameplayTag TagToLookFor)
+{
+	if (!TagToLookFor.IsValid())
+	{
+		TagToLookFor = OceanityGameTags::Input::Tag_InputTag;
+	}
+
+	if (Spec.Ability)
+	{
+		for (const FGameplayTag& DynamicTag : Spec.DynamicAbilityTags)
+		{
+			if (DynamicTag.MatchesTag(TagToLookFor))
+			{
+				return DynamicTag;
+			}
+		}
+	}
+
+	return FGameplayTag::EmptyTag;
+}
+
+FOceanityAbilityInputInfo UOceanityAbilityFunctionLibrary::GetAbilityInputInfoFromTag(const FGameplayTag& Spec,
+                                                                                      const UAbilityInputInfo* InputDataAsset)
+{
+	if (InputDataAsset)
+	{
+		return InputDataAsset->FindAbilityInputInfoByTag(Spec);
+	}
+	return FOceanityAbilityInputInfo();
+}
+
+

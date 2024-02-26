@@ -18,47 +18,46 @@ void UOceanityProjectileAbility::ActivateAbility(const FGameplayAbilitySpecHandl
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
-void UOceanityProjectileAbility::SpawnProjectile(float PitchOffset)
+UOceanityProjectileAbility::UOceanityProjectileAbility()
+{
+}
+
+void UOceanityProjectileAbility::SpawnProjectile(float PitchOffset, FVector SpawnLocation)
 {
 	const bool bIsServer = GetAvatarActorFromActorInfo()->HasAuthority();
 	if (!bIsServer) return;
+	
+	FTransform SpawnTransform;
+	SpawnTransform.SetLocation(SpawnLocation);
 
-	if (const ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo()))
+	if (const APawn* Pawn = Cast<APawn>(GetAvatarActorFromActorInfo()))
 	{
-		FTransform SpawnTransform;
-		SpawnTransform.SetLocation(CombatInterface->GetCombatSocketLocation());
+		FRotator AimRotation = Pawn->GetBaseAimRotation();
+		AimRotation.Pitch += PitchOffset;
+		SpawnTransform.SetRotation(AimRotation.Quaternion());
 
-		if (const APawn* Pawn = Cast<APawn>(GetAvatarActorFromActorInfo()))
+		AOceanityProjectile* Projectile = GetWorld()->SpawnActorDeferred<AOceanityProjectile>(
+		ProjectileClass,
+		SpawnTransform,
+		GetAvatarActorFromActorInfo(),
+		Cast<APawn>(GetAvatarActorFromActorInfo()),
+		ESpawnActorCollisionHandlingMethod::AlwaysSpawn
+		);
+
+		
+		if (UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo()))
 		{
-			FRotator AimRotation = Pawn->GetBaseAimRotation();
-			AimRotation.Pitch += PitchOffset;
-			SpawnTransform.SetRotation(AimRotation.Quaternion());
-
-			AOceanityProjectile* Projectile = GetWorld()->SpawnActorDeferred<AOceanityProjectile>(
-				ProjectileClass,
-				SpawnTransform,
-				GetAvatarActorFromActorInfo(),
-				Cast<APawn>(GetAvatarActorFromActorInfo()),
-				ESpawnActorCollisionHandlingMethod::AlwaysSpawn
-				);
-
-
-			//TODO: Add damage
-			if (UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo()))
+			FGameplayEffectContextHandle ContextHandle = SourceASC->MakeEffectContext();
+			ContextHandle.AddSourceObject(GetAvatarActorFromActorInfo());
+			const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, .1, ContextHandle);
+			float Damage = 0.f;
+			if (const UOceanityAttributeSet* AS = Cast<UOceanityAttributeSet>(SourceASC->GetAttributeSet(UOceanityAttributeSet::StaticClass())))
 			{
-				FGameplayEffectContextHandle ContextHandle = SourceASC->MakeEffectContext();
-				ContextHandle.AddSourceObject(GetAvatarActorFromActorInfo());
-				const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, .1, ContextHandle);
-				float Damage = 0.f;
-				if (const UOceanityAttributeSet* AS = Cast<UOceanityAttributeSet>(SourceASC->GetAttributeSet(UOceanityAttributeSet::StaticClass())))
-				{
-					Damage = AS->GetDamage();
-				}
-				UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, FOceanityGameplayTags::Get().Attributes_Primary_Damage, Damage);
-				Projectile->DamageEffectSpecHandle = SpecHandle;
+				Damage = AS->GetDamage();
 			}
-			
-			Projectile->FinishSpawning(SpawnTransform);
+			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, FOceanityGameplayTags::Get().Attributes_Primary_Damage, Damage);
+			Projectile->DamageEffectSpecHandle = SpecHandle;
 		}
+		Projectile->FinishSpawning(SpawnTransform);
 	}
 }

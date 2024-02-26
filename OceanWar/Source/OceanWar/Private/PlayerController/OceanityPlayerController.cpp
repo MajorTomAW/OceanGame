@@ -6,10 +6,13 @@
 #include "EnhancedInputSubsystems.h"
 #include "RenderGraphResources.h"
 #include "AbilitySystem/OceanityAbilityComponent.h"
+#include "AbilitySystem/OceanityAttributeSet.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Input/OceanityInputComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Net/UnrealNetwork.h"
+#include "Ships/OceanityShip.h"
 
 AOceanityPlayerController::AOceanityPlayerController()
 {
@@ -37,6 +40,12 @@ void AOceanityPlayerController::Client_ShowDamageNumber_Implementation(float Dam
 void AOceanityPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	if (AOceanityShip* PawnShip = Cast<AOceanityShip>(GetPawn()))
+	{
+		PawnShip->OnAbilityActorInfoSetDelegate.AddDynamic(this, &ThisClass::PawnAbilityActorInfoSet);	
+	}
+	
 	checkf(InputMappingContext, TEXT("InputMappingContext is not set in %s"), *GetName());
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
@@ -111,10 +120,7 @@ void AOceanityPlayerController::CalculateAcceleration(float Delta)
 
 	// Calculate velocity
 	Delta = Delta * GetWorld()->DeltaTimeSeconds * 100.f * GeneralAcceleration;
-	const float TempVel = CurrentVelocity + Delta;
-
-	// Clamp velocity
-	CurrentVelocity = FMath::Clamp(TempVel, -GeneralMaxVelocity, GeneralMaxVelocity);
+	CurrentVelocity = FMath::Clamp(CurrentVelocity + Delta, -GeneralMaxVelocity, GeneralMaxVelocity);
 
 	// Zero Buffer
 	if (FMath::Abs(CurrentVelocity) < 20.f)
@@ -154,7 +160,7 @@ void AOceanityPlayerController::TurnShip(const FInputActionValue& Value)
 	const FRotator NewRotation(ActorRotation.Pitch, LocalYaw, ActorRotation.Roll);
 
 	// Rotate the ship and replicate to other clients
-	if (IsValid(GetPawn())) GetPawn()->SetActorRotation(NewRotation);
+	GetPawn()->SetActorRotation(NewRotation);
 	Server_ReplicateShipRotation(NewRotation);
 }
 
@@ -166,10 +172,7 @@ void AOceanityPlayerController::Server_ReplicateShipRotation_Implementation(cons
 
 void AOceanityPlayerController::OnRep_ShipRotation()
 {
-	if (IsValid(GetPawn()))
-	{
-		GetPawn<ACharacter>()->SetActorRotation(ShipRotation);	
-	}
+	GetPawn<ACharacter>()->SetActorRotation(ShipRotation);	
 }
 
 void AOceanityPlayerController::LookCamera(const FInputActionValue& Value)
@@ -181,6 +184,36 @@ void AOceanityPlayerController::LookCamera(const FInputActionValue& Value)
 	SetControlRotation(FRotator(Pitch, Yaw, 0.f));
 }
 
+
+void AOceanityPlayerController::PawnAbilityActorInfoSet()
+{
+	if (!GetASC()) return;
+	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("Ability Actor Info Set: %s"), *GetName()), true, true, FLinearColor::Green, 10.f);
+
+	if (AOceanityShip* PawnShip = Cast<AOceanityShip>(GetPawn()))
+	{
+		UOceanityAttributeSet* AS = Cast<UOceanityAttributeSet>(PawnShip->GetAttributeSet());
+
+		GetASC()->GetGameplayAttributeValueChangeDelegate(AS->GetMaxSpeedAttribute()).AddLambda(
+			[this] (const FOnAttributeChangeData& Data)
+			{
+				UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("Max Speed: %f"), Data.NewValue), true, true, FLinearColor::Blue, 10.f);
+				GeneralMaxVelocity = Data.NewValue;
+			});
+		GetASC()->GetGameplayAttributeValueChangeDelegate(AS->GetAccelerationAttribute()).AddLambda(
+			[this] (const FOnAttributeChangeData& Data)
+			{
+				UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("Acceleration: %f"), Data.NewValue), true, true, FLinearColor::Blue, 10.f);
+				GeneralAcceleration = Data.NewValue;
+			});
+		GetASC()->GetGameplayAttributeValueChangeDelegate(AS->GetTurnSpeedAttribute()).AddLambda(
+			[this] (const FOnAttributeChangeData& Data)
+			{
+				UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("Turn Speed: %f"), Data.NewValue), true, true, FLinearColor::Blue, 10.f);
+				GeneralTurnSpeed = Data.NewValue;
+			});
+	}
+}
 
 void AOceanityPlayerController::SetupInputComponent()
 {
@@ -206,5 +239,9 @@ void AOceanityPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimePrope
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME_CONDITION_NOTIFY(AOceanityPlayerController, ShipMaxVelocity, COND_SkipOwner, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(AOceanityPlayerController, ShipRotation, COND_SkipOwner, REPNOTIFY_Always);
+	DOREPLIFETIME(AOceanityPlayerController, GeneralMaxVelocity);
+	DOREPLIFETIME(AOceanityPlayerController, GeneralAcceleration);
+	DOREPLIFETIME(AOceanityPlayerController, GeneralTurnSpeed);
+	DOREPLIFETIME(AOceanityPlayerController, GeneralWeight);
 }
 

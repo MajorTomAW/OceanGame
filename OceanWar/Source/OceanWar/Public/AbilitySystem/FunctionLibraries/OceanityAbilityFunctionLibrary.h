@@ -3,10 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayAbilitySpec.h"
+#include "GameplayTagContainer.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "UI/Data/Attributes/AbilityInputInfo.h"
 #include "OceanityAbilityFunctionLibrary.generated.h"
 
 
+enum class ETurretClassType : uint8;
+enum class EEngineClassType : uint8;
+enum class EHullClassType : uint8;
+struct FGameplayAbilitySpec;
 class UAbilitySystemComponent;
 struct FGameplayTag;
 
@@ -56,4 +63,15 @@ public:
 	{
 		return FRangedMontageSection(SectionName, Range.X, Range.Y);
 	};
+
+
+	// Ability
+	UFUNCTION(BlueprintPure, Category = "CommonAbilitySystem|Ability", meta = (DisplayName = "Get Ability Tag"))
+	static FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& Spec, FGameplayTag TagToLookFor = FGameplayTag());
+
+	UFUNCTION(BlueprintPure, Category = "CommonAbilitySystem|Ability", meta = (DisplayName = "Get Ability Input Tag"))
+	static FGameplayTag GetAbilityInputTagFromSpec(const FGameplayAbilitySpec& Spec, FGameplayTag TagToLookFor = FGameplayTag());
+
+	UFUNCTION(BlueprintPure, Category = "CommonAbilitySystem|Ability", meta = (DisplayName = "Get Ability Input Info"))
+	static FOceanityAbilityInputInfo GetAbilityInputInfoFromTag(const FGameplayTag& Spec, const UAbilityInputInfo* InputDataAsset);
 };

@@ -16,6 +16,8 @@ class OCEANWAR_API UOceanityProjectileAbility : public UCommonGameplayAbility
 	GENERATED_BODY()
 
 protected:
+	UOceanityProjectileAbility();
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
 	TSubclassOf<AOceanityProjectile> ProjectileClass;
 
@@ -23,7 +25,7 @@ protected:
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
 
 	UFUNCTION(BlueprintCallable)
-	void SpawnProjectile(float PitchOffset);
+	void SpawnProjectile(float PitchOffset, FVector SpawnLocation);
 	
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 };

@@ -32,6 +32,9 @@ public:
 	UFUNCTION(Client, Reliable)
 	void Client_ShowDamageNumber(float DamageAmount, const FGameplayTagContainer& DamageTags, ACharacter* TargetCharacter);
 
+	UFUNCTION()
+	void PawnAbilityActorInfoSet();
+
 protected:
 	virtual void SetupInputComponent() override;
 	virtual void BeginPlay() override;
@@ -80,9 +83,16 @@ private:
 	float CurrentVelocity = 0.f;
 	float InputVelocity = 0.f;
 
+	UPROPERTY(Replicated)
 	float GeneralMaxVelocity = 600.f;
+
+	UPROPERTY(Replicated)
 	float GeneralAcceleration = 2.f;
+
+	UPROPERTY(Replicated)
 	float GeneralTurnSpeed = 0.5f;
+
+	UPROPERTY(Replicated)
 	float GeneralWeight = 0.f;
 
 	UPROPERTY(ReplicatedUsing = OnRep_ShipMaxVelocity)

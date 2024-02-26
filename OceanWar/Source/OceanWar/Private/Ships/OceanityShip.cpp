@@ -4,12 +4,14 @@
 
 #include "AbilitySystemComponent.h"
 #include "GameplayEffect.h"
+#include "AbilitySystem/OceanityAttributeSet.h"
 #include "AbilitySystem/FunctionLibraries/OceanityAbilityFunctionLibrary.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "OceanWar/OceanWar.h"
+#include "PlayerController/OceanityPlayerController.h"
 
 // Sets default values
 AOceanityShip::AOceanityShip()
@@ -20,6 +22,8 @@ AOceanityShip::AOceanityShip()
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetMesh()->SetGenerateOverlapEvents(false);
+	GetMesh()->SetRenderCustomDepth(true);
+	GetMesh()->SetCustomDepthStencilValue(2);
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
 
@@ -32,7 +36,9 @@ AOceanityShip::AOceanityShip()
 	if (WeaponSocketMesh)
 	{
 		WeaponSocketMesh->SetupAttachment(GetMesh(), FName("WeaponSocketMeshSocket"));
-		WeaponSocketMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);	
+		WeaponSocketMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		WeaponSocketMesh->SetRenderCustomDepth(true);
+		WeaponSocketMesh->SetCustomDepthStencilValue(2);
 	}
 	
 	// Weapon Mesh
@@ -46,6 +52,8 @@ AOceanityShip::AOceanityShip()
 		WeaponMesh->PrimaryComponentTick.TickGroup = TG_PrePhysics;
 		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		WeaponMesh->SetupAttachment(WeaponSocketMesh, FName("WeaponMeshSocket"));
+		WeaponMesh->SetRenderCustomDepth(true);
+		WeaponMesh->SetCustomDepthStencilValue(2);
 	}
 
 	// Engine Mesh
@@ -53,7 +61,16 @@ AOceanityShip::AOceanityShip()
 	if (EngineMesh)
 	{
 		EngineMesh->SetupAttachment(GetMesh(), FName("EngineMeshSocket"));
-		EngineMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);	
+		EngineMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		EngineMesh->SetRenderCustomDepth(true);
+		EngineMesh->SetCustomDepthStencilValue(2);
+	}
+
+	// Equipment Component
+	EquipmentComponent = CreateDefaultSubobject<UOceanityEquipmentComponent>(TEXT("EquipmentComponent"));
+	if (EquipmentComponent)
+	{
+		// EquipmentComponent->SetIsReplicated(true);
 	}
 }
 
@@ -87,45 +104,78 @@ void AOceanityShip::AimOffset(float DeltaTime)
 		const FVector2D OutRange(-90.f, 0.f);
 		AO_Pitch = FMath::GetMappedRangeValueClamped(InRange, OutRange, AO_Pitch);
 	}
-	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("AO_Yaw: %f"), AO_Yaw), true, true, FLinearColor::Red, 0.f, FName("Yaw"));
+	//UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("AO_Yaw: %f"), AO_Yaw), true, true, FLinearColor::Red, 0.f, FName("Yaw"));
 }
+
+void AOceanityShip::BindFunctionsToEquipmentComponent()
+{
+	if (IsValid(EquipmentComponent))
+	{
+		//EquipmentComponent->BindEquipmentActions(this, &AOceanityShip::OnTurretMeshChanged, &AOceanityShip::OnEngineMeshChanged, &AOceanityShip::OnHullMeshChanged);
+		EquipmentComponent->OnTurretMeshChanged.AddDynamic(this, &AOceanityShip::OnTurretMeshChanged);
+		EquipmentComponent->OnEngineMeshChanged.AddDynamic(this, &AOceanityShip::OnEngineMeshChanged);
+		EquipmentComponent->OnHullMeshChanged.AddDynamic(this, &AOceanityShip::OnHullMeshChanged);
+	}
+}
+
+void AOceanityShip::OnTurretMeshChanged(USkeletalMesh* NewMesh)
+{
+	WeaponMesh->SetSkeletalMesh(NewMesh);
+	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("Turret Mesh Changed: %s"), *NewMesh->GetName()), true, true, FLinearColor::Red, 2.f, FName("Turret"));
+}
+
+void AOceanityShip::OnEngineMeshChanged(USkeletalMesh* NewMesh)
+{
+	EngineMesh->SetSkeletalMesh(NewMesh);
+	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("Engine Mesh Changed: %s"), *NewMesh->GetName()), true, true, FLinearColor::Red, 2.f, FName("Engine"));
+}
+
+void AOceanityShip::OnHullMeshChanged(USkeletalMesh* NewMesh)
+{
+	GetMesh()->SetSkeletalMesh(NewMesh);
+	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("Hull Mesh Changed: %s"), *NewMesh->GetName()), true, true, FLinearColor::Red, 2.f, FName("Hull"));
+}
+
+
+/** Combat Interface */
+UAnimMontage* AOceanityShip::GetWeaponMontage() const
+{
+	if (IsValid(EquipmentComponent))
+	{
+		return EquipmentComponent->GetAttackMontage();
+	}
+	return nullptr;
+}
+/** End Combat Interface */
 
 void AOceanityShip::InitAbilityActorInfo()
 {
+	AbilityActorInfoSet();
+}
+
+void AOceanityShip::AbilityActorInfoSet()
+{
+	/*if (const UOceanityAttributeSet* AS = Cast<UOceanityAttributeSet>(AttributeSet))
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AS->GetMaxSpeedAttribute()).AddLambda(
+			[this] (const FOnAttributeChangeData& Data)
+			{
+				GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
+				UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("Max Speed: %f"), Data.NewValue), true, true, FLinearColor::Blue, 10.f);
+			});
+	}*/
+	OnAbilityActorInfoSetDelegate.Broadcast();
+
+	if (AOceanityPlayerController* PC = Cast<AOceanityPlayerController>(GetController()))
+	{
+		PC->PawnAbilityActorInfoSet();
+	}
 }
 
 void AOceanityShip::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	AimOffset(DeltaSeconds);
-}
-
-void AOceanityShip::AddStartupGameplayAbilities() const
-{
-	if (AbilitySystemComponent)
-	{
-		UOceanityAbilityFunctionLibrary::AddStartupAbilities(
-			this,
-			TurretClass,
-			EngineClass,
-			HullClass,
-			AbilitySystemComponent
-			);
-	}
-}
-
-void AOceanityShip::InitializeAttributes() const
-{
-	if (AbilitySystemComponent)
-	{
-		UOceanityAbilityFunctionLibrary::InitializeDefaultAttribute(
-			this,
-			TurretClass,
-			EngineClass,
-			HullClass,
-			AbilitySystemComponent
-			);
-	}
 }
 
 void AOceanityShip::BeginPlay()
