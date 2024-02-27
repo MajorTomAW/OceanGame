@@ -5,7 +5,7 @@
 #include "NativeGameplayTags.h"
 
 
-namespace OceanityGameTags
+namespace OceanityGameplayTags
 {
 	/** Damage*/
 	namespace Damage
@@ -14,19 +14,20 @@ namespace OceanityGameTags
 
 		namespace Type
 		{
-			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Fire)
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Type_Fire)
 		}
 
 		namespace Event
 		{
-			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Hit)
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Event_Hit)
+
 			namespace Hit
 			{
-				UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Vital)
-				UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Shield)
-				UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_DestroyShield)
-				UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Dead)
-			}		
+				UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Hit_Vital)
+				UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Hit_Shield)
+				UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Hit_DestroyShield)
+				UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Hit_Dead)
+			}
 		}
 	}
 
@@ -53,23 +54,31 @@ namespace OceanityGameTags
 
 		namespace Descriptor
 		{
-			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Melee)
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Descriptor_Melee)
+
 			namespace Melee
 			{
-				UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Launch)				
+				UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Descriptor_Melee_Launch)
 			}
 
-			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Ranged)
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Descriptor_Ranged)
+
 			namespace Ranged
 			{
-				UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Shoot)
+				UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Descriptor_Ranged_Shoot)
 			}
 
 
-			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Boost)
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Descriptor_Boost)
+
 			namespace Reload
 			{
-				UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_ReloadAmmo)
+				UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Descriptor_Reload_ReloadAmmo)
+			}
+
+			namespace Event
+			{
+				UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Descriptor_Event_HitReact)				
 			}
 		}
 
@@ -78,5 +87,63 @@ namespace OceanityGameTags
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Cooldown_Shoot)
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Cooldown_Boost)
 		}
+	}
+
+	/** Attribute */
+	namespace Attribute
+	{
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Attribute)
+
+		namespace Meta
+		{
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Meta_IncomingCoins)
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Meta_IncomingDamage)
+		}
+
+		namespace Vital
+		{
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Vital_MaxHealth)
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Vital_Health)
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Vital_Shield)
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Vital_MaxShield)
+		}
+
+		namespace Primary
+		{
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Primary_Damage)
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Primary_Ammo)
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Primary_MaxAmmo)
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Primary_ReloadSpeed)
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Primary_ShootCooldown)
+		}
+
+		namespace Secondary
+		{
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Secondary_MaxSpeed)
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Secondary_Acceleration)
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Secondary_TurnSpeed)
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Secondary_Weight)
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Secondary_BackwardsMultiplier)
+		}
+
+		namespace Boost
+		{
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Boost_BoostDuration)
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Boost_BoostCooldown)
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Boost_BoostSpeed)
+		}
+	}
+
+	/** Gameplay */
+	namespace Gameplay
+	{
+		namespace Event
+		{
+			namespace Hit
+			{
+				UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Hit_Success)
+				UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Hit_Fail)
+			}			
+		}		
 	}
 }
