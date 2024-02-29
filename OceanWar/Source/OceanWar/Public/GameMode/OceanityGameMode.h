@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "OceanityGameMode.generated.h"
 
+class UCoinEarnInfo;
 class UGameplayEffect;
 class UEngineClassInfo;
 class UTurretClassInfo;
@@ -33,4 +34,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ShipClassDefaults")
 	TSubclassOf<UGameplayEffect> DerivedInitialGameplayEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Coin Defaults")
+	TObjectPtr<UCoinEarnInfo> CoinEarnInfoDefaults;
 };

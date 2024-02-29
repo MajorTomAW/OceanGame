@@ -54,6 +54,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "CommonAbilitySystem|Defaults", meta = (DisplayName = "Add Startup Abilities", WorldContext = "WorldContextObject"))
 	static void AddStartupAbilities(const UObject* WorldContextObject, ETurretClassType TurretClass, EEngineClassType EngineClass, EHullClassType HullClass, UAbilitySystemComponent* ASC);
 
+	UFUNCTION(BlueprintCallable, Category = "CommonAbilitySystem|Rewards", meta = (DisplayName = "Get Earned Coins", WorldContext = "WorldContextObject"))
+	static int32 GetEarnedCoins(const UObject* WorldContextObject, const FGameplayTagContainer& DamageTags);
+
 	/** Animations */
 	UFUNCTION(BlueprintCallable, Category = "CommonAbilitySystem|Animations", meta = (DisplayName = "Get Montage Section based on Ranged Float"))
 	static FName GetMontageSectionBasedOnRangedFloat(float Value, TArray<FRangedMontageSection> Sections);

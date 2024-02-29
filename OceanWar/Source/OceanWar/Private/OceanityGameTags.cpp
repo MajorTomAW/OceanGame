@@ -3,7 +3,7 @@
 #include "OceanityGameTags.h"
 
 // Damage
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Damage::Tag_Damage, "Damage.Damage", "Base Damage Tag");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Damage::Tag_Damage, "Damage", "Base Damage Tag");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Damage::Type::Tag_Type_Fire, "Damage.Type.Fire", "Fire Damage Type");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Damage::Event::Tag_Event_Hit, "Damage.Event.Hit", "Hit Event");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Damage::Event::Hit::Tag_Hit_Vital, "Damage.Event.Hit.Vital", "Vital Hit");
@@ -13,19 +13,19 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Damage::Event::Hit::Tag_Hit
 
 // Input
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Input::Tag_InputTag, "Input.InputTag", "Base Input Tag");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Input::Tag_LMB, "Input.LMB", "Left Mouse Button");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Input::Tag_RMB, "Input.RMB", "Right Mouse Button");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Input::Tag_Space, "Input.Space", "Spacebar");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Input::Tag_1, "Input.1", "Number 1 Key");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Input::Tag_2, "Input.2", "Number 2 Key");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Input::Tag_3, "Input.3", "Number 3 Key");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Input::Tag_4, "Input.4", "Number 4 Key");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Input::Tag_5, "Input.5", "Number 5 Key");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Input::Tag_6, "Input.6", "Number 6 Key");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Input::Tag_7, "Input.7", "Number 7 Key");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Input::Tag_LMB, "Input.InputTag.LMB", "Left Mouse Button");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Input::Tag_RMB, "Input.InputTag.RMB", "Right Mouse Button");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Input::Tag_Space, "Input.InputTag.Space", "Spacebar");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Input::Tag_1, "Input.InputTag.1", "Number 1 Key");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Input::Tag_2, "Input.InputTag.2", "Number 2 Key");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Input::Tag_3, "Input.InputTag.3", "Number 3 Key");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Input::Tag_4, "Input.InputTag.4", "Number 4 Key");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Input::Tag_5, "Input.InputTag.5", "Number 5 Key");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Input::Tag_6, "Input.InputTag.6", "Number 6 Key");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Input::Tag_7, "Input.InputTag.7", "Number 7 Key");
 
 // Ability
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Ability::Tag_Ability, "Ability.Ability", "Base Ability Tag");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Ability::Tag_Ability, "Ability", "Base Ability Tag");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Ability::Descriptor::Tag_Descriptor_Melee, "Ability.Descriptor.Melee", "Melee Ability Descriptor");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Ability::Descriptor::Melee::Tag_Descriptor_Melee_Launch, "Ability.Descriptor.Melee.Launch", "Melee Launch Ability");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Ability::Descriptor::Tag_Descriptor_Ranged, "Ability.Descriptor.Ranged", "Ranged Ability Descriptor");
@@ -37,7 +37,7 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Ability::Descriptor::Event:
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Ability::Cooldown::Tag_Cooldown_Boost, "Ability.Cooldown.Boost", "Boost Ability Cooldown");
 
 // Attribute
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Attribute::Tag_Attribute, "Attribute.Attribute", "Base Attribute Tag");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Attribute::Tag_Attribute, "Attribute", "Base Attribute Tag");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Attribute::Meta::Tag_Meta_IncomingCoins, "Attribute.Meta.IncomingCoins", "Incoming Coins Meta Attribute");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Attribute::Meta::Tag_Meta_IncomingDamage, "Attribute.Meta.IncomingDamage", "Incoming Damage Meta Attribute");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(OceanityGameplayTags::Attribute::Vital::Tag_Vital_MaxHealth, "Attribute.Vital.MaxHealth", "Max Health Vital Attribute");

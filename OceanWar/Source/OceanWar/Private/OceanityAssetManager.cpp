@@ -3,7 +3,6 @@
 
 #include "OceanityAssetManager.h"
 #include "AbilitySystemGlobals.h"
-#include "OceanityGameplayTags.h"
 
 UOceanityAssetManager& UOceanityAssetManager::Get()
 {
@@ -15,8 +14,6 @@ UOceanityAssetManager& UOceanityAssetManager::Get()
 void UOceanityAssetManager::StartInitialLoading()
 {
 	Super::StartInitialLoading();
-
-	FOceanityGameplayTags::InitializeNativeGameplayTags();
 
 	// Required to use Target Data!
 	UAbilitySystemGlobals::Get().InitGlobalData();

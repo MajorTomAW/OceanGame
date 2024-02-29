@@ -108,6 +108,10 @@ public:
 	FGameplayAttributeData IncomingDamage;
 	ATTRIBUTE_ACCESSORS(UOceanityAttributeSet, IncomingDamage)
 
+	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
+	FGameplayAttributeData IncomingCoins;
+	ATTRIBUTE_ACCESSORS(UOceanityAttributeSet, IncomingCoins)
+
 	/** Replication */
 	UFUNCTION()
 	virtual void OnRep_Health(const FGameplayAttributeData& OldHealth);

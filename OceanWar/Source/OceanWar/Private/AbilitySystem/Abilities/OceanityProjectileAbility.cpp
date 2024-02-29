@@ -5,7 +5,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
-#include "OceanityGameplayTags.h"
+#include "OceanityGameTags.h"
 #include "AbilitySystem/OceanityAttributeSet.h"
 #include "AbilitySystem/Actor/OceanityProjectile.h"
 #include "Interfaces/CombatInterface.h"
@@ -55,7 +55,7 @@ void UOceanityProjectileAbility::SpawnProjectile(float PitchOffset, FVector Spaw
 			{
 				Damage = AS->GetDamage();
 			}
-			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, FOceanityGameplayTags::Get().Attributes_Primary_Damage, Damage);
+			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, OceanityGameplayTags::Attribute::Primary::Tag_Primary_Damage, Damage);
 			Projectile->DamageEffectSpecHandle = SpecHandle;
 		}
 		Projectile->FinishSpawning(SpawnTransform);

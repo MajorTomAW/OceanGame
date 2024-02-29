@@ -19,9 +19,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<TSubclassOf<class UGameplayAbility>> DefaultAbilities;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TMap<FGameplayTag, float> DefaultAttributes;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (Categories = "Attribute"))
+	TMap<UPARAM(meta = (Categories = "Attribute")) FGameplayTag, float> DefaultAttributes;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TMap<FGameplayTag, float> DefaultDerivedAttributes;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (Categories = "Attribute"))
+	TMap<UPARAM(meta = (Categories = "Attribute")) FGameplayTag, float> DefaultDerivedAttributes;
 };

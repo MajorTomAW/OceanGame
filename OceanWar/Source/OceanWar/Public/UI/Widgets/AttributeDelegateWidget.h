@@ -18,10 +18,10 @@ class OCEANWAR_API UAttributeDelegateWidget : public UCommonExtendedActivatableW
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes", meta = (EditCondition = "bBindToPrimaryAttribute"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes", meta = (EditCondition = "bBindToPrimaryAttribute", Categories = "Attribute"))
 	FGameplayTag PrimaryAttributeTag;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes", meta = (EditCondition = "bBindToSecondaryAttribute"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes", meta = (EditCondition = "bBindToSecondaryAttribute", Categories = "Attribute"))
 	FGameplayTag SecondaryAttributeTag;
 
 	UPROPERTY(EditAnywhere, Category = "Attributes", meta = (InlineEditConditionToggle))

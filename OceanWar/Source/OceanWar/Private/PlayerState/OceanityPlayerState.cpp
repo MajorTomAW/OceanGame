@@ -5,6 +5,7 @@
 
 #include "AbilitySystem/OceanityAbilityComponent.h"
 #include "AbilitySystem/OceanityAttributeSet.h"
+#include "Net/UnrealNetwork.h"
 
 AOceanityPlayerState::AOceanityPlayerState()
 {
@@ -18,4 +19,29 @@ AOceanityPlayerState::AOceanityPlayerState()
 	}
 	
 	AttributeSet = CreateDefaultSubobject<UOceanityAttributeSet>(TEXT("AttributeSet"));
+}
+
+void AOceanityPlayerState::AddCoins(int32 InCoins)
+{
+	const int32 OldCoins = Coins;
+	Coins += InCoins;
+	OnCoinsChanged.Broadcast(Coins, OldCoins);
+}
+
+void AOceanityPlayerState::SetCoins(int32 InCoins)
+{
+	const int32 OldCoins = Coins;
+	Coins = InCoins;
+	OnCoinsChanged.Broadcast(Coins, OldCoins);
+}
+
+void AOceanityPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AOceanityPlayerState, Coins);
+}
+
+void AOceanityPlayerState::OnRep_Coins(int32 OldCoins)
+{
+	OnCoinsChanged.Broadcast(Coins, OldCoins);
 }

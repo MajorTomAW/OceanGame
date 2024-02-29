@@ -14,16 +14,19 @@ struct FOceanityAbilityInfo
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (Categories = "Ability.Descriptor"))
-	FGameplayTag AbilityTag;
+	FGameplayTag AbilityTag = FGameplayTag::EmptyTag;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FGameplayTag CooldownTag = FGameplayTag::EmptyTag;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	FGameplayTag InputTag;
+	FGameplayTag InputTag = FGameplayTag::EmptyTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<UTexture2D> AbilityIcon;
+	TObjectPtr<UTexture2D> AbilityIcon = nullptr;
 
 	UPROPERTY(BlueprintReadOnly)
-	FOceanityAbilityInputInfo InputInfo;
+	FOceanityAbilityInputInfo InputInfo = FOceanityAbilityInputInfo();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool bShouldShowInUI = true;

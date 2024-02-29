@@ -5,39 +5,45 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayEffectExtension.h"
-#include "OceanityGameplayTags.h"
 #include "OceanityGameTags.h"
+#include "AbilitySystem/FunctionLibraries/OceanityAbilityFunctionLibrary.h"
 #include "GameFramework/Character.h"
 #include "Log/OceanityLogChannels.h"
 #include "Net/UnrealNetwork.h"
 
 UOceanityAttributeSet::UOceanityAttributeSet()
 {
-	const FOceanityGameplayTags& OceanityTags = FOceanityGameplayTags::Get();
 	// Vital Attributes
-	TagsToAttributes.Add(OceanityTags.Attributes_Vital_Health, GetHealthAttribute);
-	TagsToAttributes.Add(OceanityTags.Attributes_Vital_MaxHealth, GetMaxHealthAttribute);
-	TagsToAttributes.Add(OceanityTags.Attributes_Vital_Shield, GetShieldAttribute);
-	TagsToAttributes.Add(OceanityTags.Attributes_Vital_MaxShield, GetMaxShieldAttribute);
+	TagsToAttributes.Add(OceanityGameplayTags::Attribute::Vital::Tag_Vital_MaxHealth, GetMaxHealthAttribute);
+	TagsToAttributes.Add(OceanityGameplayTags::Attribute::Vital::Tag_Vital_Health, GetHealthAttribute);
+	TagsToAttributes.Add(OceanityGameplayTags::Attribute::Vital::Tag_Vital_Shield, GetShieldAttribute);
+	TagsToAttributes.Add(OceanityGameplayTags::Attribute::Vital::Tag_Vital_MaxShield, GetMaxShieldAttribute);
 
 	// Primary Attributes
-	TagsToAttributes.Add(OceanityTags.Attributes_Primary_Damage, GetDamageAttribute);
-	TagsToAttributes.Add(OceanityTags.Attributes_Primary_Ammo, GetAmmoAttribute);
-	TagsToAttributes.Add(OceanityTags.Attributes_Primary_MaxAmmo, GetMaxAmmoAttribute);
-	TagsToAttributes.Add(OceanityTags.Attributes_Primary_ReloadSpeed, GetReloadSpeedAttribute);
-	TagsToAttributes.Add(OceanityTags.Attributes_Primary_ShootCooldown, GetShootCooldownAttribute);
+	TagsToAttributes.Add(OceanityGameplayTags::Attribute::Primary::Tag_Primary_Damage, GetDamageAttribute);
+	TagsToAttributes.Add(OceanityGameplayTags::Attribute::Primary::Tag_Primary_Ammo, GetAmmoAttribute);
+	TagsToAttributes.Add(OceanityGameplayTags::Attribute::Primary::Tag_Primary_MaxAmmo, GetMaxAmmoAttribute);
+	TagsToAttributes.Add(OceanityGameplayTags::Attribute::Primary::Tag_Primary_ReloadSpeed, GetReloadSpeedAttribute);
+	TagsToAttributes.Add(OceanityGameplayTags::Attribute::Primary::Tag_Primary_ShootCooldown,
+	                     GetShootCooldownAttribute);
 
 	// Secondary Attributes
-	TagsToAttributes.Add(OceanityTags.Attributes_Secondary_MaxSpeed, GetMaxSpeedAttribute);
-	TagsToAttributes.Add(OceanityTags.Attributes_Secondary_Acceleration, GetAccelerationAttribute);
-	TagsToAttributes.Add(OceanityTags.Attributes_Secondary_TurnSpeed, GetTurnSpeedAttribute);
-	TagsToAttributes.Add(OceanityTags.Attributes_Secondary_Weight, GetWeightAttribute);
-	TagsToAttributes.Add(OceanityTags.Attributes_Secondary_BackwardsMultiplier, GetBackwardsMultiplierAttribute);
+	TagsToAttributes.Add(OceanityGameplayTags::Attribute::Secondary::Tag_Secondary_MaxSpeed, GetMaxSpeedAttribute);
+	TagsToAttributes.Add(OceanityGameplayTags::Attribute::Secondary::Tag_Secondary_Acceleration,
+	                     GetAccelerationAttribute);
+	TagsToAttributes.Add(OceanityGameplayTags::Attribute::Secondary::Tag_Secondary_TurnSpeed, GetTurnSpeedAttribute);
+	TagsToAttributes.Add(OceanityGameplayTags::Attribute::Secondary::Tag_Secondary_Weight, GetWeightAttribute);
+	TagsToAttributes.Add(OceanityGameplayTags::Attribute::Secondary::Tag_Secondary_BackwardsMultiplier,
+	                     GetBackwardsMultiplierAttribute);
 
 	// Boost Attributes
-	TagsToAttributes.Add(OceanityTags.Attributes_Boost_Duration, GetBoostDurationAttribute);
-	TagsToAttributes.Add(OceanityTags.Attributes_Boost_Cooldown, GetBoostCooldownAttribute);
-	TagsToAttributes.Add(OceanityTags.Attributes_Boost_Speed, GetBoostSpeedAttribute);
+	TagsToAttributes.Add(OceanityGameplayTags::Attribute::Boost::Tag_Boost_BoostDuration, GetBoostDurationAttribute);
+	TagsToAttributes.Add(OceanityGameplayTags::Attribute::Boost::Tag_Boost_BoostCooldown, GetBoostCooldownAttribute);
+	TagsToAttributes.Add(OceanityGameplayTags::Attribute::Boost::Tag_Boost_BoostSpeed, GetBoostSpeedAttribute);
+
+	// Meta Attributes
+	TagsToAttributes.Add(OceanityGameplayTags::Attribute::Meta::Tag_Meta_IncomingCoins, GetIncomingCoinsAttribute);
+	TagsToAttributes.Add(OceanityGameplayTags::Attribute::Meta::Tag_Meta_IncomingDamage, GetIncomingDamageAttribute);
 }
 
 
@@ -64,7 +70,7 @@ void UOceanityAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCa
 	Super::PostGameplayEffectExecute(Data);
 	FEffectProperties Props;
 	SetEffectProperties(Data, Props);
-	
+
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
@@ -82,6 +88,7 @@ void UOceanityAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCa
 	{
 		const float LocalIncomingDamage = GetIncomingDamage();
 		float AppliedDamage = LocalIncomingDamage;
+		float EarnedMoney = AppliedDamage * 10.f;
 		SetIncomingDamage(0.f);
 		bool bIsDead = false;
 
@@ -94,18 +101,19 @@ void UOceanityAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCa
 			*	If there is still damage left over, ignore the rest since it's been absorbed by shield
 			*/
 			const float OldShield = GetShield();
-			const float NewShield = FMath::Max(0.f, GetShield() - LocalIncomingDamage); // New Shield should be 0 or greater
+			const float NewShield = FMath::Max(0.f, GetShield() - LocalIncomingDamage);
+			// New Shield should be 0 or greater
 			SetShield(NewShield);
 			AppliedDamage = OldShield - NewShield;
 
 			if (GetShield() > 0.f)
 			{
 				// Shield is still up, damage was absorbed
-				DamageTags.AddTag(OceanityGameTags::Damage::Event::Hit::Tag_Shield);
+				DamageTags.AddTag(OceanityGameplayTags::Damage::Event::Hit::Tag_Hit_Shield);
 			}
 			else
 			{
-				DamageTags.AddTag(OceanityGameTags::Damage::Event::Hit::Tag_DestroyShield);
+				DamageTags.AddTag(OceanityGameplayTags::Damage::Event::Hit::Tag_Hit_DestroyShield);
 			}
 		}
 		else
@@ -114,28 +122,31 @@ void UOceanityAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCa
 			*	No shield, take health damage
 			*/
 			const float OldHealth = GetHealth();
-			const float NewHealth = FMath::Max(0.f, GetHealth() - LocalIncomingDamage); // New Health should be 0 or greater
+			const float NewHealth = FMath::Max(0.f, GetHealth() - LocalIncomingDamage);
+			// New Health should be 0 or greater
 			SetHealth(NewHealth);
 			AppliedDamage = OldHealth - NewHealth;
 
 			bIsDead = GetHealth() <= 0.f;
 			if (bIsDead)
 			{
-				DamageTags.AddTag(OceanityGameTags::Damage::Event::Hit::Tag_Dead);
+				DamageTags.AddTag(OceanityGameplayTags::Damage::Event::Hit::Tag_Hit_Dead);
 			}
 		}
-
+			
 		/*
 		 * Only show damage numbers for players and only if the source is not the target
 		 * We dont want to show damage numbers for damage we do to ourselves
 		*/
-		
+
 		if (Props.SourceCharacter->IsPlayerControlled() && Props.SourceCharacter != Props.TargetCharacter)
 		{
 			UAbilitySystemComponent* ASC = Data.EffectSpec.GetEffectContext().GetOriginalInstigatorAbilitySystemComponent();
 			AActor* SourceActor = ASC ? ASC->AbilityActorInfo->AvatarActor.Get() : nullptr;
-			FGameplayTag EventTag = OceanityGameTags::Damage::Event::Tag_Hit;
 			FGameplayEffectContextHandle ContextHandle = Data.EffectSpec.GetContext();
+			
+			/** Get Coins earned based on Damage Tags */
+			EarnedMoney += UOceanityAbilityFunctionLibrary::GetEarnedCoins(this, DamageTags);
 
 			const FVector RandomLocation = FVector(
 				FMath::FRandRange(-50.f, 50.f),
@@ -151,9 +162,30 @@ void UOceanityAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCa
 			CueParams.SourceObject = Props.TargetCharacter;
 			CueParams.Instigator = SourceActor;
 			CueParams.AggregatedTargetTags = DamageTags;
-			
-			ASC->ExecuteGameplayCue(FGameplayTag::RequestGameplayTag(FName("GameplayCue.GameplayEvent.Hit.Success"), true), CueParams);
+
+			ASC->ExecuteGameplayCue(
+				FGameplayTag::RequestGameplayTag(FName("GameplayCue.GameplayEvent.Hit.Success"), true), CueParams);
+
+			if (EarnedMoney > 0.f) //TODO: Negative Money should be possible
+			{
+				FGameplayEventData EventData;
+				EventData.EventMagnitude = EarnedMoney;
+				EventData.TargetTags = FGameplayTagContainer(OceanityGameplayTags::Attribute::Meta::Tag_Meta_IncomingCoins);
+
+				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+					SourceActor,
+					OceanityGameplayTags::Gameplay::Event::Hit::Tag_Hit_Success,
+					EventData);	
+			}
 		}
+	}
+	else if (Data.EvaluatedData.Attribute == GetIncomingCoinsAttribute())
+	{
+		const float LocalIncomingCoins = GetIncomingCoins();
+
+		if (LocalIncomingCoins == 0.f) return;
+		SetIncomingCoins(0.f);
+		UE_LOG(LogOceanityGAS, Warning, TEXT("Incoming Coins: %f"), LocalIncomingCoins);
 	}
 }
 

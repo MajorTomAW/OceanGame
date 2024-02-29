@@ -8,6 +8,7 @@
 #include "GameplayEffectTypes.h"
 #include "OceanityGameTags.h"
 #include "AbilitySystem/OceanityAbilityComponent.h"
+#include "AbilitySystem/Data/Cashout/CoinEarnInfo.h"
 #include "AbilitySystem/Data/Ship/EngineClassInfo.h"
 #include "AbilitySystem/Data/Ship/HullClassInfo.h"
 #include "AbilitySystem/Data/Ship/ShipClassInfo.h"
@@ -130,8 +131,20 @@ void UOceanityAbilityFunctionLibrary::AddStartupAbilities(
 	}
 }
 
+int32 UOceanityAbilityFunctionLibrary::GetEarnedCoins(
+	const UObject* WorldContextObject,
+	const FGameplayTagContainer& DamageTags)
+{
+	AGameModeBase* GameModeBase = UGameplayStatics::GetGameMode(WorldContextObject);
+	if (const AOceanityGameMode* GMB = Cast<AOceanityGameMode>(GameModeBase))
+	{
+		return GMB->CoinEarnInfoDefaults->GetCoinsEarned(DamageTags);
+	}
+	return 0;
+}
+
 FName UOceanityAbilityFunctionLibrary::GetMontageSectionBasedOnRangedFloat(float Value,
-	TArray<FRangedMontageSection> Sections)
+                                                                           TArray<FRangedMontageSection> Sections)
 {
 	for (const auto& Section : Sections)
 	{
@@ -148,7 +161,7 @@ FGameplayTag UOceanityAbilityFunctionLibrary::GetAbilityTagFromSpec(const FGamep
 {
 	if (!TagToLookFor.IsValid())
 	{
-		TagToLookFor = OceanityGameTags::Ability::Tag_Ability;
+		TagToLookFor = OceanityGameplayTags::Ability::Tag_Ability;
 	}
 
 	if (Spec.Ability)
@@ -170,7 +183,7 @@ FGameplayTag UOceanityAbilityFunctionLibrary::GetAbilityInputTagFromSpec(const F
 {
 	if (!TagToLookFor.IsValid())
 	{
-		TagToLookFor = OceanityGameTags::Input::Tag_InputTag;
+		TagToLookFor = OceanityGameplayTags::Input::Tag_InputTag;
 	}
 
 	if (Spec.Ability)

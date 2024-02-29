@@ -10,6 +10,7 @@ class UOceanityAbilityComponent;
 struct FGameplayAttribute;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FValueChangedSignature, const FGameplayTag&, Tag, float, NewValue);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, const FOceanityAbilityInfo&, AbilityInfo);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FPlayerStateChangedSignature, int32, NewValue, int32, DeltaValue);
 
 /**
  * Widget controller for attribute widgets.
@@ -30,6 +31,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FAbilityInfoSignature OnAbilityInfoChangedDelegate;
 
+	UPROPERTY(BlueprintAssignable)
+	FPlayerStateChangedSignature OnPlayerCoinsChangedDelegate;
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability Info")
 	TObjectPtr<class UAbilityInfo> AbilityDataAsset;
@@ -38,6 +42,8 @@ protected:
 	TObjectPtr<class UAbilityInputInfo> AbilityInputDataAsset;
 
 	void OnInitializeStartupAbilities(UOceanityAbilityComponent* AbilityComponent) const;
+
+	void OnPlayerCoinsChanged(int32 NewCoins, int32 OldCoins);
 
 private:
 	void BroadcastAttributeInfo(const FGameplayTag& Tag, const FGameplayAttribute& Attribute) const;

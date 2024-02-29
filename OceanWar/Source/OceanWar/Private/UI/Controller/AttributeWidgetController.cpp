@@ -7,6 +7,7 @@
 #include "AbilitySystem/OceanityAbilityComponent.h"
 #include "AbilitySystem/FunctionLibraries/OceanityAbilityFunctionLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "PlayerState/OceanityPlayerState.h"
 #include "UI/Data/Attributes/AbilityInfo.h"
 
 void UAttributeWidgetController::BroadcastInitialValues()
@@ -32,7 +33,11 @@ void UAttributeWidgetController::BroadcastInitialValues()
 
 void UAttributeWidgetController::BindCallbacksToDependencies()
 {
+	AOceanityPlayerState* PS = CastChecked<AOceanityPlayerState>(PlayerState);
 	UCommonAttributeSet* AS = Cast<UCommonAttributeSet>(this->AttributeSet);
+
+	PS->OnCoinsChanged.AddUObject(this, &ThisClass::OnPlayerCoinsChanged);
+	
 	for (auto& Pair : AS->TagsToAttributes)
 	{
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Pair.Value()).AddLambda(
@@ -41,6 +46,8 @@ void UAttributeWidgetController::BindCallbacksToDependencies()
 				BroadcastAttributeInfo(Pair.Key, Pair.Value());
 			});
 	}
+
+	
 }
 
 void UAttributeWidgetController::OnInitializeStartupAbilities(UOceanityAbilityComponent* AbilityComponent) const
@@ -60,6 +67,12 @@ void UAttributeWidgetController::OnInitializeStartupAbilities(UOceanityAbilityCo
 		});
 
 	AbilityComponent->ForEachAbility(Delegate);
+}
+
+void UAttributeWidgetController::OnPlayerCoinsChanged(int32 NewCoins, int32 OldCoins)
+{
+	const int32 DeltaCoins = NewCoins - OldCoins;
+	OnPlayerCoinsChangedDelegate.Broadcast(NewCoins, DeltaCoins);
 }
 
 void UAttributeWidgetController::BroadcastAttributeInfo(const FGameplayTag& Tag, const FGameplayAttribute& Attribute) const

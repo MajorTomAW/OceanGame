@@ -6,6 +6,23 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "ConversionsFunctionLibrary.generated.h"
 
+struct FCommonMath
+{
+	template<typename Value>
+	static float FindBiggestValue(const TArray<Value>& InArray)
+	{
+		float OutValue = InArray[0];
+		for (int32 i = 1; i < InArray.Num(); i++)
+		{
+			if (InArray[i] > OutValue)
+			{
+				OutValue = InArray[i];
+			}
+		}
+		return OutValue;
+	}
+};
+
 /**
  * 
  */
@@ -27,4 +44,10 @@ class COMMONMATH_API UConversionsFunctionLibrary : public UBlueprintFunctionLibr
 
 	UFUNCTION(BlueprintPure, Category = "Common Math|Conversions", meta = (DisplayName = "Convert km/h to cm/s", CompactNodeTitle = "km/h to cm/s", Keywords = "convert km/h cm/s"))
 	static float ConvertKmHToCmS(float KmH) {return KmH * 27.7778f;}
+
+	UFUNCTION(BlueprintPure, Category = "CommonMath|Array", meta = (DisplayName = "Get Biggest Value (float)", Keywords = "biggest value float"))
+	static float GetBiggestValueFloat(const TArray<float>& InArray) {return FCommonMath::FindBiggestValue<float>(InArray); }
+
+	UFUNCTION(BlueprintPure, Category = "CommonMath|Array", meta = (DisplayName = "Get Biggest Value (int)", Keywords = "biggest value int"))
+	static int32 GetBiggestValueInt(const TArray<int32>& InArray) {return FCommonMath::FindBiggestValue<int32>(InArray); }
 };

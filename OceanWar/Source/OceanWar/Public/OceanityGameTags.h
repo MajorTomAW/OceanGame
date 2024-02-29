@@ -143,7 +143,7 @@ namespace OceanityGameplayTags
 			{
 				UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Hit_Success)
 				UE_DECLARE_GAMEPLAY_TAG_EXTERN(Tag_Hit_Fail)
-			}			
+			}
 		}		
 	}
 }

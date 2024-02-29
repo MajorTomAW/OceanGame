@@ -6,7 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "NiagaraFunctionLibrary.h"
-#include "OceanityGameplayTags.h"
+#include "OceanityGameTags.h"
 #include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
@@ -106,14 +106,14 @@ void AOceanityProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedCompone
 			EventData.Instigator = GetInstigator();
 			EventData.ContextHandle = Context;
 			
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OtherActor, FOceanityGameplayTags::Get().Ability_Event_HitReact, EventData);
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OtherActor, OceanityGameplayTags::Ability::Descriptor::Event::Tag_Descriptor_Event_HitReact, EventData);
 
 			FGameplayEventData HitEventData;
 			HitEventData.Instigator = GetInstigator();
 			HitEventData.Target = OtherActor;
 			HitEventData.ContextHandle = Context;
-			HitEventData.EventTag = FOceanityGameplayTags::Get().GameplayEvent_Hit_Success;
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Owner, FOceanityGameplayTags::Get().GameplayEvent_Hit_Success, HitEventData);
+			HitEventData.EventTag = OceanityGameplayTags::Gameplay::Event::Hit::Tag_Hit_Success;
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Owner, OceanityGameplayTags::Gameplay::Event::Hit::Tag_Hit_Success, HitEventData);
 		}
 		Destroy();
 	}
